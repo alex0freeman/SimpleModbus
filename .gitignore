@@ -1,6 +1,7 @@
-.vs
-nuget.exe
+*.so
+*.dll
+*.exe
 packages
 TAGS
-ModbusService/*
+.vs
 util/*

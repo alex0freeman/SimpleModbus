@@ -17,8 +17,9 @@ On Linux / Mono platform its required to install [[https://dist.nuget.org/win-x8
 
 Use =protoc= utility to autobuild ModbusService gRPC files:
 #+BEGIN_SRC bash
-  mkdir ModbusService
-  packages/Grpc.Tools.1.8.0/tools/linux_x64/protoc -I. --csharp_out ModbusService --grpc_out ModbusService ./modbus.proto --plugin=protoc-gen-grpc=packages/Grpc.Tools.1.8.0/tools/linux_x64/grpc_csharp_plugin
+  MB_DIR=ModbusImp
+  mkdir -v $MB_DIR
+  packages/Grpc.Tools.1.8.0/tools/linux_x64/protoc -I. --csharp_out $MB_DIR --grpc_out $MB_DIR ./modbus.proto --plugin=protoc-gen-grpc=packages/Grpc.Tools.1.8.0/tools/linux_x64/grpc_csharp_plugin
 #+END_SRC
 
 ** TODO TODO

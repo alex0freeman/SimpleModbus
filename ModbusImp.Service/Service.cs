@@ -3,16 +3,17 @@
 using System;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Helloworld;
+using ModbusImp;
 
-namespace GreeterServer
+namespace ModbusImp.Service
 {
-    class GreeterImpl : Greeter.GreeterBase
+    class ModbusImpl : Modbus.ModbusBase
     {
         // Server side handler of the SayHello RPC
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public override Task<TCPResponse> GetTCP(TCPRequest request, ServerCallContext context)
         {
-            return Task.FromResult(new HelloReply { Message = "Hello " + request.Name });
+            ModbusImp.TCPRequest ttcp = new ModbusImp.TCPRequest(1, 3, 3, 2);
+            return Task.FromResult(new TCPResponse { Seq = "Hello" });
         }
     }
 
@@ -24,7 +25,7 @@ namespace GreeterServer
         {
             Server server = new Server
             {
-                Services = { Greeter.BindService(new GreeterImpl()) },
+                Services = { Modbus.BindService(new ModbusImpl()) },
                 Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             };
             server.Start();
