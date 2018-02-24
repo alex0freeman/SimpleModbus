@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-
-
     enum MbErrors
     {
         IllegalFunction = 1,
@@ -32,8 +30,6 @@ namespace ModbusImp
         ReadInputRegister
     };
 
-
-
     class ModbusDevice<T> where T : MBContext
     {
         private T cntx; // Modbus context
@@ -46,19 +42,11 @@ namespace ModbusImp
         // Read data from current context
         private int Read(byte funcNumber, ushort startAddress, ushort numItems)
         {
-            byte[] seq = { 0, 0, 00, 02 };
-        //    RequestPacket pack;
-         //   pack.slaveId = 1;
-         //   pack.functionCode = funcNumber;
-         //   pack.startAddress = startAddress;
-        //    pack.data = seq;
-           
-      //      var message = cntx.BuildMessage(pack);
-          //  int expected
-            byte[] buff = new byte[256];
-           // cntx.SendMsg(message);
+            byte[] buff = new byte[256]; // Buffer to save response
+
             int cnt = cntx.RecieveMsg(ref buff);
             Console.WriteLine(BitConverter.ToString(buff, 0, cnt));
+
             return 0;
         }
 

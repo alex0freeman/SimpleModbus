@@ -1,0 +1,29 @@
+#+TITLE: Simple Modbus
+#+DATE: <2018-02-24 Сб>
+
+* Simple Modbus
+Simple gRPC service that implements Modbus TCP protocol to communicate with Modbus devices in local network.
+
+** Usage
+#+BEGIN_SRC bash
+  docker build . -t modbus-tcp-service
+  docker run -d -p 50051:50051 modbus-tcp-service
+#+END_SRC
+
+** Installation
+On Linux / Mono platform its required to install [[https://dist.nuget.org/win-x86-commandline/latest/nuget.exe][latest nuget]]. Then install required packages with:
+#+BEGIN_SRC bash
+  mono ./nuget.exe restore
+#+END_SRC
+
+Use =protoc= utility to autobuild ModbusService gRPC files:
+#+BEGIN_SRC bash
+  mkdir ModbusService
+  packages/Grpc.Tools.1.8.0/tools/linux_x64/protoc -I. --csharp_out ModbusService --grpc_out ModbusService ./modbus.proto --plugin=protoc-gen-grpc=packages/Grpc.Tools.1.8.0/tools/linux_x64/grpc_csharp_plugin
+#+END_SRC
+
+** TODO
++ gRPC service to handle Modbus requests
++ Dockerfile for complete Mono + gRPC container installation
++ ModbusRTU wrapper
++ Handle Modbus responses in ModbusImp

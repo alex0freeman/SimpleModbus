@@ -4,13 +4,11 @@ using System.Linq;
 
 namespace ModbusImp
 {
-    
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MBRequestReadWriteOne 
+    struct MBRequestReadWriteOne
     {
         byte slaveId { get; set; }
-        byte functionId { get; set; }   
+        byte functionId { get; set; }
         ushort startAddress { get; set; }
         ushort readCnt { get; set; }
 
@@ -24,7 +22,7 @@ namespace ModbusImp
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MBRequestWrite 
+    struct MBRequestWrite
     {
         byte slaveId { get; set; }
         byte functionId { get; set; }
@@ -40,12 +38,5 @@ namespace ModbusImp
             this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0);
             this.byteSequenceCnt = byteSequenceCnt;
         }
-        
     }
-
-
-
-
-
-
 }

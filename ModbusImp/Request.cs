@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-
     abstract class Request
     {
         protected const ushort maxLengthMsg = 256;
@@ -43,14 +42,10 @@ namespace ModbusImp
         {
             return GetBytes().Length + crcLength;
         }
-
-
-
     }
 
     class TCPRequest : Request
     {
-
         private ushort protocolId = 0;
         private int StartDataIndex;
         private int length;
@@ -65,10 +60,7 @@ namespace ModbusImp
             Console.WriteLine(RequestMsg.Length);
             length = BytesCnt();
             Build();
-            
         }
-
- 
 
         protected override void Build()
         {
@@ -79,21 +71,12 @@ namespace ModbusImp
             RequestMsg[4] = (byte)(length >> 8);
             RequestMsg[5] = (byte)(length);
             Array.Copy(GetBytes(), 0, RequestMsg, StartDataIndex, length);
-            Console.WriteLine(BitConverter.ToString(RequestMsg)); 
+            Console.WriteLine(BitConverter.ToString(RequestMsg));
         }
-
-   
 
         public override int GetMsgLenth()
         {
             return RequestMsg.Length;
         }
-
-
     }
-    }
-
-
-
-
-
+}
