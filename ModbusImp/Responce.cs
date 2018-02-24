@@ -15,6 +15,7 @@ namespace ModbusImp
         protected ushort dataLength { get; set; }
         protected byte[] data { get; set; }
         protected abstract void TryParse(byte[] responce);
+
         protected class ErrorHandling
         {
             bool errorExist = false;
@@ -44,10 +45,7 @@ namespace ModbusImp
                 }
             }
         }
-
-
     }
-
 
     //class TCPResponce : Responce
     //{

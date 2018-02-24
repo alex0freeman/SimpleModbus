@@ -7,12 +7,10 @@ using System.Net.Sockets;
 namespace ModbusImp
 {
     class MainApp
-
     {
         public static void Main()
         {
-
-           TCPRequest ttcp = new TCPRequest(1,3,3,2);
+            TCPRequest ttcp = new TCPRequest(1,3,3,2);
             //Transport<MBContext>.Register(1, () => new TCPContex("192.168.0.111", 502));
             //MBContext tcp = Transport<MBContext>.Create(1);
 
@@ -27,9 +25,5 @@ namespace ModbusImp
             ////tcp.Disconnect();
             Console.ReadLine();
         }
-       
     }
 }
-
-
-

@@ -1,0 +1,6 @@
+.vs
+nuget.exe
+packages
+TAGS
+ModbusService/*
+util/*

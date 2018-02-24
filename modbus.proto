@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package modbus;
+
+// Modbus service definition.
+service Modbus {
+  // Handles TCP request to Modbus device.
+  rpc GetTCP (TCPRequest) returns (TCPResponse) {}
+}
+
+// The request message containing Modbus TCP values
+message TCPRequest {
+  uint32 slaveId = 1; // Slave device ID
+  uint32 functionCode = 2; // Modbus function code
+  uint32 startAddress = 3; // Reading start address
+  uint32 readCnt = 4; // Number of readed bytes
+}
+
+// The response message containing the Modbus TCP answer values
+message TCPResponse {
+  string seq = 1; // Sequence of readed bytes
+}

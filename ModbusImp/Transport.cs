@@ -67,13 +67,11 @@ namespace ModbusImp
             return bytesRec;
         }
 
-
         //byte[] MBContext.BuildMessage(RequestPacket request)
         //{
         //    tcpRequest = new TCPRequest(request);
         //    return tcpRequest.RequestMsg;
         //}
-
     }
 
     public class Transport<T>
@@ -97,8 +95,4 @@ namespace ModbusImp
             _dict.Add(id, ctor);
         }
     }
-
-
-
-
 }

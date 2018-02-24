@@ -1,0 +1,39 @@
+// gRPC server that accepts requests on Modbus functions
+
+using System;
+using System.Threading.Tasks;
+using Grpc.Core;
+using Helloworld;
+
+namespace GreeterServer
+{
+    class GreeterImpl : Greeter.GreeterBase
+    {
+        // Server side handler of the SayHello RPC
+        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        {
+            return Task.FromResult(new HelloReply { Message = "Hello " + request.Name });
+        }
+    }
+
+    class Program
+    {
+        const int Port = 50051;
+
+        public static void Main(string[] args)
+        {
+            Server server = new Server
+            {
+                Services = { Greeter.BindService(new GreeterImpl()) },
+                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+            };
+            server.Start();
+
+            Console.WriteLine("Modbus gRPC server listening on port " + Port);
+            Console.WriteLine("Press any key to stop the server...");
+            Console.ReadKey();
+
+            server.ShutdownAsync().Wait();
+        }
+    }
+}
