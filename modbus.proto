@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package modbus;
+package ModbusImp.Service;
 
 // Modbus service definition.
 service Modbus {

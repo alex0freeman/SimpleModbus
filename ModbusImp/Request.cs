@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-    abstract class Request
+    public abstract class Request
     {
         protected const ushort maxLengthMsg = 256;
         protected object requestPack;
@@ -44,7 +44,7 @@ namespace ModbusImp
         }
     }
 
-    class TCPRequest : Request
+    public class TCPRequest : Request
     {
         private ushort protocolId = 0;
         private int StartDataIndex;
