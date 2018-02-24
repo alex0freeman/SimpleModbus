@@ -1,6 +1,7 @@
 // gRPC server that accepts requests on Modbus functions
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using ModbusImp;
@@ -26,13 +27,16 @@ namespace ModbusImp.Service
             Server server = new Server
             {
                 Services = { Modbus.BindService(new ModbusImpl()) },
-                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+                Ports = { new ServerPort("0.0.0.0", Port, ServerCredentials.Insecure) }
             };
             server.Start();
 
-            Console.WriteLine("Modbus gRPC server listening on port " + Port);
-            Console.WriteLine("Press any key to stop the server...");
-            Console.ReadKey();
+            // Console.WriteLine("Modbus gRPC server listening on port " + Port);
+            // Console.WriteLine("Press any key to stop the server...");
+            // Console.ReadKey();
+
+            // TODO: Fix this mock later
+            while (true) { Thread.Sleep(1000); }
 
             server.ShutdownAsync().Wait();
         }
