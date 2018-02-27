@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-    abstract class Responce
+    public abstract class Responce
     {
         public ushort expectedResponce { get; protected set; }
-        protected byte slaveId { get; set; }
-        protected byte functionNum { get; set; }
         protected const ushort maxLengthMsg = 256;
         protected ushort dataLength { get; set; }
-        protected byte[] data { get; set; }
-        protected abstract void TryParse(byte[] responce);
-
+        public byte[] data;
+        protected abstract void TryParse(byte[] responce, out byte[] result);
         protected class ErrorHandling
         {
             bool errorExist = false;
@@ -47,25 +44,30 @@ namespace ModbusImp
         }
     }
 
-    //class TCPResponce : Responce
-    //{
-    //    const int mbapHeader = 8;
+    class TCPResponce : Responce
+    {
+        const int mbapHeader = 6;
+        public TCPResponce(byte[] responce, int expected)
+        {
+            byte[] message = new byte[responce.Length - mbapHeader];
+            Array.Copy(responce, mbapHeader, message, 0, message.Length);
 
-    //    public TCPResponce(byte[] responce, int expected)
-    //    {
-    //        if (responce.Length != expected) 
-    //        {
-    //            var Error = new ErrorHandling(responce, 8);
-    //        }
-    //        else
-    //        {
+            if (responce.Length != expected)
+            {
+                Console.WriteLine("{0} {1}", responce.Length, expected);
+                var Error = new ErrorHandling(responce, 8);
+            }
+            else
+            {
+                TryParse(message, out data);
 
-    //        }
-    //    }
+            }
+        }
 
-    //    protected override void TryParse(byte[] responce, out byte[] result)
-    //    {
-
-    //    }
-    //  }
+        protected override void TryParse(byte[] responce, out byte[] result)
+        {
+            MBReadResponse res = new MBReadResponse(responce);
+            result = res.readCnt;
+        }
+    }
 }

@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-    interface MBContext
+    public interface MBContext
     {
         void Connect();
         void Disconnect();
         int SendMsg(byte[] msg);
         int RecieveMsg(ref byte[] buff);
-       // byte[] BuildMessage(RequestPacket request);
+        byte[] BuildMessage(byte slaveId, byte functionCode, ushort startAddress, ushort readCnt);
+        byte[] GetContent(byte[] fullResponce);
     }
 
-    class TCPContex : MBContext
+    public class TCPContex : MBContext
     {
         IPAddress Ip;
         ushort Port;
         private Socket tcpSocket;
-        Request tcpRequest;
+        TCPRequest tcpRequest;
+        TCPResponce tcpResponce;
+        int expectedResponceBytes;
+
 
         public TCPContex(string ip, ushort port)
         {
@@ -67,11 +71,22 @@ namespace ModbusImp
             return bytesRec;
         }
 
-        //byte[] MBContext.BuildMessage(RequestPacket request)
-        //{
-        //    tcpRequest = new TCPRequest(request);
-        //    return tcpRequest.RequestMsg;
-        //}
+        byte[] MBContext.BuildMessage(byte slaveId, byte functionCode, ushort startAddress, ushort readCnt)
+        {
+            tcpRequest = new TCPRequest(slaveId, functionCode, startAddress, readCnt);
+            return tcpRequest.RequestMsg;
+        }
+
+    
+
+        byte[] MBContext.GetContent(byte[] fullResponce)
+        {
+            tcpResponce = new TCPResponce(fullResponce, tcpRequest.ExpectedBytes);
+            
+            return tcpResponce.data;
+        }
+
+
     }
 
     public class Transport<T>

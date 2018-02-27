@@ -35,7 +35,7 @@ namespace ModbusImp
             {
                 case ((byte)MbFunctions.ReadCoils):
                 case ((byte)MbFunctions.ReadInputs):
-                    return (elementsCnt >= 8) ? (elementsCnt) : 1;
+                    return (elementsCnt >= 8) ? (elementsCnt/8 + 1) : 1;
                 case ((byte)MbFunctions.ReadHoldingRegisters):
                 case ((byte)MbFunctions.ReadInputRegister):
                     return elementsCnt * sizeof(short);
@@ -75,7 +75,6 @@ namespace ModbusImp
             StartDataIndex = header;
             RequestMsg = new byte[header + BytesCnt()];  // [+byteSequenceCnt]
             transactionId++;
-            Console.WriteLine(RequestMsg.Length);
             length = BytesCnt();
             Build();
             ExpectedBytes = header + responceExectedHeader + GetExpectedBytesByFunction(functionCode, readCnt);
@@ -90,7 +89,7 @@ namespace ModbusImp
             RequestMsg[4] = (byte)(length >> 8);
             RequestMsg[5] = (byte)(length);
             Array.Copy(GetBytes(), 0, RequestMsg, StartDataIndex, length);
-            Console.WriteLine(BitConverter.ToString(RequestMsg));
+         
         }
 
         public override int GetMsgLenth()

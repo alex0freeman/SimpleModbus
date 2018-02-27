@@ -30,47 +30,61 @@ namespace ModbusImp
         ReadInputRegister
     };
 
-    class ModbusDevice<T> where T : MBContext
+    public class ModbusDevice<T> where T : MBContext
     {
         private T cntx; // Modbus context
-
-        public ModbusDevice(T cntx)
+        public byte SlaveId { get; set; }
+        public ModbusDevice(T cntx, byte slaveId)
         {
             this.cntx = cntx;
+            cntx.Connect();
+            SlaveId = slaveId;
         }
 
         // Read data from current context
-        private int Read(byte funcNumber, ushort startAddress, ushort numItems)
+        private byte[] Read(byte funcNumber, ushort startAddress, ushort numItems)
         {
             byte[] buff = new byte[256]; // Buffer to save response
-
+            byte[] message = cntx.BuildMessage(SlaveId, funcNumber, startAddress, numItems);
+            cntx.SendMsg(message);
             int cnt = cntx.RecieveMsg(ref buff);
-            Console.WriteLine(BitConverter.ToString(buff, 0, cnt));
-
-            return 0;
+            byte[] responce = new byte[cnt];
+            Array.Copy(buff, responce, cnt);
+            return cntx.GetContent(responce); ;
         }
 
-        public int ReadCoils(ushort startAddress, ushort numItems)
+
+        private bool[] ParseDiscretes(byte[] res, int num)
         {
-            return Read((byte)MbFunctions.ReadCoils, startAddress, numItems);
+            bool[] result = new bool[num];
+            for (int i = 0; i < num; i++)
+            {
+                int cur = (i >= 8) ? 0 : i;
+                byte bit_mask = (byte)(1 << cur);
+                result[i] = Convert.ToBoolean(res[(i/8)] & bit_mask);
+                Console.WriteLine(result[i]);
+             }
+            
+            return result;
         }
 
-        public int ReadInput(ushort startAddress, ushort numItems)
+        public bool[] ReadCoils(ushort startAddress, ushort numItems)
         {
-            return Read((byte)MbFunctions.ReadInputs, startAddress, numItems);
+            byte[] res = Read((byte)MbFunctions.ReadCoils, startAddress, numItems);           
+            return ParseDiscretes(res, numItems);
         }
 
-
-        public byte[] ToByte<U>(U str) where U : struct
+        public bool[] ReadInput(ushort startAddress, ushort numItems)
         {
-            int size = Marshal.SizeOf(str);
-            byte[] arr = new byte[size];
-
-            IntPtr ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(str, ptr, true);
-            Marshal.Copy(ptr, arr, 0, size);
-            Marshal.FreeHGlobal(ptr);
-            return arr;
+            byte[] res = Read((byte)MbFunctions.ReadInputs, startAddress, numItems);
+            Console.WriteLine(BitConverter.ToString(res));
+            return ParseDiscretes(res, numItems);
         }
+
+        public void Disconnect()
+        {
+            cntx.Disconnect();
+        }
+
     }
 }
