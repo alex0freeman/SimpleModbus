@@ -8,28 +8,6 @@ using System.Threading.Tasks;
 
 namespace ModbusImp
 {
-    enum MbErrors
-    {
-        IllegalFunction = 1,
-        IllegalDataAddress,
-        IllegalDataValue,
-        SlaveDeviceFailure,
-        Acknowlegment,
-        SlaveDeviceBusy,
-        NegativeAcknowledge,
-        MemoryParityError,
-        GatewayPathUnavailable,
-        GatewayTargetdeviceFailedToRespond
-    };
-
-    enum MbFunctions
-    {
-        ReadCoils = 1,
-        ReadInputs,
-        ReadHoldingRegisters,
-        ReadInputRegister
-    };
-
     public class ModbusDevice<T> where T : MBContext
     {
         private T cntx; // Modbus context
@@ -37,7 +15,6 @@ namespace ModbusImp
         public ModbusDevice(T cntx, byte slaveId)
         {
             this.cntx = cntx;
-            cntx.Connect();
             SlaveId = slaveId;
         }
 
@@ -79,6 +56,11 @@ namespace ModbusImp
             byte[] res = Read((byte)MbFunctions.ReadInputs, startAddress, numItems);
             Console.WriteLine(BitConverter.ToString(res));
             return ParseDiscretes(res, numItems);
+        }
+        
+        public void Connect()
+        {
+            cntx.Connect();
         }
 
         public void Disconnect()
