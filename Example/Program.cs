@@ -17,22 +17,29 @@ namespace ModbusImp
 
             ModbusDevice<MBContext> tcpDevice = new ModbusDevice<MBContext>(tcp, 1);
             tcpDevice.Connect();
-            bool[] res = tcpDevice.ReadCoils(0, 2);
+            bool[] coils = tcpDevice.ReadCoils(0, 2);
             Console.Write("ReadCoils: ");
 
-            for (int i = 0; i < res.Length; i++)
+            for (int i = 0; i < coils.Length; i++)
             {
-                Console.Write("{0} ", res[i]);
+                Console.Write("{0} ", coils[i]);
             }
 
-            bool[] x = tcpDevice.ReadInput(0, 15);
+            bool[] discreteInputs = tcpDevice.ReadInput(0, 15);
             Console.WriteLine();
             Console.Write("ReadInputs: ");
 
-            for (int i = 0; i < x.Length; i++)
+            for (int i = 0; i < discreteInputs.Length; i++)
             {
-                Console.Write("{0} ", x[i]);
+                Console.Write("{0} ", discreteInputs[i]);
             }
+
+            short[] inputRegisters = tcpDevice.ReadInputRegisters(0, 10);
+
+            short[] holdingRegisters = tcpDevice.ReadHoldingRegisters(0, 10);
+
+
+
 
             tcpDevice.Disconnect();
             Console.ReadKey();

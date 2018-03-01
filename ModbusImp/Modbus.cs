@@ -31,33 +31,58 @@ namespace ModbusImp
         }
 
 
-        private bool[] ParseDiscretes(byte[] res, int num)
+        private bool[] ParseDiscretes(byte[] responseData, int count)
         {
-            bool[] result = new bool[num];
-            for (int i = 0; i < num; i++)
+            bool[] discreteArray = new bool[count];
+            for (int i = 0; i < count; i++)
             {
                 int cur = (i >= 8) ? 0 : i;
-                byte bit_mask = (byte)(1 << cur);
-                result[i] = Convert.ToBoolean(res[(i/8)] & bit_mask);
-                Console.WriteLine(result[i]);
-             }
-            
-            return result;
+                byte bitMask = (byte)(1 << cur);
+                discreteArray[i] = Convert.ToBoolean(responseData[(i/8)] & bitMask);
+            }
+
+            return discreteArray;
         }
 
-        public bool[] ReadCoils(ushort startAddress, ushort numItems)
+        private short ReverseBytes(short value)
         {
-            byte[] res = Read((byte)MbFunctions.ReadCoils, startAddress, numItems);           
-            return ParseDiscretes(res, numItems);
+            return (short)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
         }
 
-        public bool[] ReadInput(ushort startAddress, ushort numItems)
+        private short[] ParseRegisters(byte[] responseData, int count)
         {
-            byte[] res = Read((byte)MbFunctions.ReadInputs, startAddress, numItems);
-            Console.WriteLine(BitConverter.ToString(res));
-            return ParseDiscretes(res, numItems);
+            short[] registersArray = new short[count];
+
+            Buffer.BlockCopy(responseData, 0, registersArray, 0, responseData.Length);
+            return registersArray.Select(x => ReverseBytes(x)).ToArray();
         }
-        
+
+        public bool[] ReadCoils(ushort startAddress, ushort itemCount)
+        {
+            byte[] coils = Read((byte)MbFunctions.ReadCoils, startAddress, itemCount);           
+            return ParseDiscretes(coils, itemCount);
+        }
+
+        public bool[] ReadInput(ushort startAddress, ushort itemCount)
+        {
+            byte[] discreteInputs = Read((byte)MbFunctions.ReadInputs, startAddress, itemCount);
+            Console.WriteLine(BitConverter.ToString(discreteInputs));
+            return ParseDiscretes(discreteInputs, itemCount);
+        }
+
+        public short[] ReadInputRegisters(ushort startAddress, ushort itemCount)
+        {
+            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputRegister, startAddress, itemCount);
+            return ParseRegisters(inputRegisters, itemCount);
+        }
+
+        public short[] ReadHoldingRegisters(ushort startAddress, ushort itemCount)
+        {
+            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldingRegisters, startAddress, itemCount);
+            return ParseRegisters(holdingRegisters, itemCount);
+        }
+
+
         public void Connect()
         {
             cntx.Connect();
