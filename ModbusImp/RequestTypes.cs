@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+
+//TODO Reverse Bytes in TypeManager
 namespace ModbusImp
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -14,8 +16,8 @@ namespace ModbusImp
         public ushort readCnt;
         public MBReadCoils(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = startAddress;
-            this.readCnt = readCnt;
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
+            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
         }
     }
 
@@ -27,8 +29,8 @@ namespace ModbusImp
 
         public MBReadDiscretes(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = startAddress;
-            this.readCnt = readCnt;
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
+            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
         }
     }
 
@@ -40,8 +42,8 @@ namespace ModbusImp
 
         public MBReadInputRegisters(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = startAddress;
-            this.readCnt = readCnt;
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
+            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
         }
     }
 
@@ -53,8 +55,8 @@ namespace ModbusImp
 
         public MBReadHoldingRegisters(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = startAddress;
-            this.readCnt = readCnt;
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
+            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
         }
     }
 

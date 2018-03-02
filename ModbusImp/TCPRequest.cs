@@ -33,7 +33,8 @@ namespace ModbusImp
             RequestMsg[5] = (byte)(length);
             RequestMsg[6] = (slaveId);
             RequestMsg[7] = (functionCode);
-            Array.Copy(data, 0, RequestMsg, header, length);
+            Array.Copy(data, 0, RequestMsg, header, data.Length);
+            Console.WriteLine(BitConverter.ToString(RequestMsg));
         }
 
         public override int GetMsgLenth()

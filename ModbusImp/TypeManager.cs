@@ -11,6 +11,7 @@ namespace ModbusImp
     {
         public static byte[] ToBytes(T type)
         {
+            
             int size = Marshal.SizeOf(type);
             byte[] array = new byte[size];
             IntPtr ptr = Marshal.AllocHGlobal(size);
