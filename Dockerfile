@@ -23,6 +23,10 @@ RUN wget -O nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.ex
     mono nuget.exe restore && \
     rm nuget.exe
 
+# Create protobuf files
+RUN pwd
+RUN pb/generate.sh
+
 # Compile app
 RUN xbuild
 

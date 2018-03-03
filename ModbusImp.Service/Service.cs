@@ -1,37 +1,116 @@
 // gRPC server that accepts requests on Modbus functions
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Grpc.Core;
-using ModbusImp;
 
 namespace ModbusImp.Service
 {
-    class ModbusImpl : Modbus.ModbusBase
+    /// <summary>
+    /// Implementation of gRPC server that performs access to Modbus devices from any gRPC client
+    /// </summary>
+    public class ModbusImpl : ModbusTCP.ModbusTCPBase
     {
-        // Server side handler of the SayHello RPC
-        public override Task<TCPResponse> GetTCP(TCPRequest request, ServerCallContext context)
+        /// <summary>
+        /// Current device context
+        /// </summary>
+        private Dictionary<Tuple<string, ushort>, ModbusDevice<MBContext>> _device_contexts;
+
+        ~ModbusImpl()
         {
-            ModbusImp.TCPRequest ttcp = new ModbusImp.TCPRequest(1, 3, 3, 2);
-            return Task.FromResult(new TCPResponse { Seq = "Hello" });
+            foreach (var ctx in this._device_contexts)
+            {
+                ctx.Value.Disconnect();
+            }
+        }
+        
+        /// <summary>
+        /// Client new Modbus connection initialize
+        /// </summary>
+        public override Task<ModbusConnectionResponse> ConnectDevice(ModbusConnectionRequest request,
+            ServerCallContext context)
+        {
+            var address = request.Ip;
+            var port = (ushort) request.Port;
+            var device = new Tuple<string, ushort>(address, port);
+            
+            // Register device context
+            Transport<TCPContex>.Register(1, () => new TCPContex(address, port));
+            var tcp = Transport<TCPContex>.Create(1);
+            _device_contexts.Add(device, new ModbusDevice<MBContext>(tcp, 1));
+            
+            // Initialize connection
+            _device_contexts[device].Connect();
+            
+            // Send connection status
+            // TODO: Add connection check in library
+            return Task.FromResult(new ModbusConnectionResponse { Connected = true });
+        }
+        
+        /// <summary>
+        /// Reading request to Modbus target device
+        /// </summary>
+        public override Task<ModbusReadResponse> ReadModbus(ModbusReadRequest request, ServerCallContext context)
+        {
+            var address = Convert.ToString(request.Ip);
+            var port = Convert.ToUInt16(request.Port);
+            var device = new Tuple<string, ushort>(address, port);
+            var device_context = this._device_contexts[device];
+            var registerType = request.RegisterType;
+            var startAddress = Convert.ToUInt16(request.StartAddress);
+            var readCnt = Convert.ToUInt16(request.ReadCnt);
+            
+            // Request Modbus slave 
+            // TODO: Fix type conversions in library
+            byte[] seq = null;
+            switch (registerType)
+            {
+                case ModbusRegisters.Coil:
+                    var resultCoil = device_context.ReadCoils(startAddress, readCnt);
+                    seq = Array.ConvertAll(resultCoil, b => b ? (byte) 1 : (byte) 0);
+                    break;
+                case ModbusRegisters.DiscreteInput:
+                    var resultInput = device_context.ReadInput(startAddress, readCnt);
+                    seq = Array.ConvertAll(resultInput, b => b ? (byte) 1 : (byte) 0);
+                    break;
+                case ModbusRegisters.Holding:
+//                    var result_holding = device_context.ReadHolding(startAddress, readCnt);
+//                    seq = Array.ConvertAll(result_holding, b => b ? (byte) 1 : (byte) 0);
+                    break;
+                case ModbusRegisters.Input:
+//                    var result_input_registers = device_context.ReadInputRegisters(startAddress, readCnt);
+//                    seq = Array.ConvertAll(result_input_registers, b => b ? (byte) 1 : (byte) 0);
+                    break;
+            }
+            
+            return Task.FromResult(new ModbusReadResponse
+            {
+                Seq = ByteString.CopyFrom(seq)
+            });
         }
     }
 
+    /// <summary>
+    /// Server entrypoint
+    /// </summary>
     class Program
     {
-        const int Port = 50051;
+        private const string Hostname = "0.0.0.0";
+        private const int Port = 50051;
 
         public static void Main(string[] args)
         {
-            Server server = new Server
+            var server = new Server
             {
-                Services = { Modbus.BindService(new ModbusImpl()) },
-                Ports = { new ServerPort("0.0.0.0", Port, ServerCredentials.Insecure) }
+                Services = { ModbusTCP.BindService(new ModbusImpl()) },
+                Ports = { new ServerPort(Hostname, Port, ServerCredentials.Insecure) }
             };
             server.Start();
 
-            // Console.WriteLine("Modbus gRPC server listening on port " + Port);
+            Console.WriteLine("Modbus gRPC server listening on port " + Port);
             // Console.WriteLine("Press any key to stop the server...");
             // Console.ReadKey();
 

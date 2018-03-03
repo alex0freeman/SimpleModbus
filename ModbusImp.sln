@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusImp.Service", "Modbus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{1E2D23DA-2915-49D8-8388-D43150D0206E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusImp.Service.Tests", "ModbusImp.Service.Tests\ModbusImp.Service.Tests.csproj", "{E5D4DFDE-F451-465E-9806-23CC1326202F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,9 +26,12 @@ Global
 		{D4450CE9-A06F-4CD7-AD01-6C64120EF5D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4450CE9-A06F-4CD7-AD01-6C64120EF5D0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1E2D23DA-2915-49D8-8388-D43150D0206E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E2D23DA-2915-49D8-8388-D43150D0206E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E2D23DA-2915-49D8-8388-D43150D0206E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E2D23DA-2915-49D8-8388-D43150D0206E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5D4DFDE-F451-465E-9806-23CC1326202F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5D4DFDE-F451-465E-9806-23CC1326202F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5D4DFDE-F451-465E-9806-23CC1326202F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5D4DFDE-F451-465E-9806-23CC1326202F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

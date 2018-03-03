@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package ModbusImp.Service;
+
+// Modbus TCP service definition
+service ModbusTCP {
+  // Establish Modbus TCP connection with target device
+  rpc ConnectDevice (ModbusConnectionRequest) returns (ModbusConnectionResponse) {}
+  // Update connected device status
+  //rpc UpdateStatus (ModbusStatusRequest) returns (ModbusDeviceStatus) {}
+  // Performs reading request to target Modbus device
+  rpc ReadModbus (ModbusReadRequest) returns (ModbusReadResponse) {}
+  // Performs writing request to target Modbus device
+  //rpc WriteModbus (ModbusWriteRequest) returns (ModbusWriteResponse) {}
+}
+
+// Available modbus registers types
+enum ModbusRegisters {
+  Coil = 0;
+  DiscreteInput = 1;
+  Input = 2;
+  Holding = 3;
+}
+
+// Request to connect to Modbus slave device
+message ModbusConnectionRequest {
+  string ip = 1; // Target IP address
+  uint32 port = 2; // Target port number
+}
+
+// Response to Modbus connection request
+message ModbusConnectionResponse {
+  bool connected = 1; // Status code of connection
+}
+
+// Request status of connected Modbus device
+message ModbusStatusRequest {
+  uint32 deviceId = 1; // Id of registered device
+}
+
+// Response status of connected Modbus device
+message ModbusDeviceStatus {
+  bool connected = 1; // Status code of connection
+}
+
+// Request to read registers from Modbus target device
+message ModbusReadRequest {
+  string ip = 1; // Registered Modbus slave IP address
+  uint32 port = 2; // Registered Modbus slave port 
+  ModbusRegisters registerType = 3; // Modbus register to read
+  uint32 startAddress = 4; // Reading start address
+  uint32 readCnt = 5; // Number of readed bytes
+}
+
+// Modbus target reading response represented as byte sequence
+message ModbusReadResponse {
+  bytes seq = 1; // Sequence of readed bytes
+}
