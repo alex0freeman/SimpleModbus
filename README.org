@@ -13,13 +13,13 @@ Service represented with two components:
 ** Usage
 *Note:* Project currently under development, some functions may works incorrectly.
 
-1. Run gRPC service in docker:
+ 1. Run gRPC service in docker:
 #+BEGIN_SRC bash
   docker build . -t modbus-tcp-service
   docker run -t --rm -p 50051:50051 modbus-tcp-service
 #+END_SRC
 
-2. Create gRPC client using our API (described in protobuf files) to connect and query Modbus devices from network.
+ 2. Create gRPC client using our API (described in protobuf files) to connect and query Modbus devices from network.
 That can be done with with simple python client runned on localhost:
 #+BEGIN_SRC bash
   cd TestClient
