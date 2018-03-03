@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace ModbusImp
 {
-    public class TCPContex : MBContext
+    public class TCPContex : IMBContext
     {
         IPAddress Ip;
         ushort Port;
@@ -21,7 +21,7 @@ namespace ModbusImp
             Port = port;
         }
 
-        void MBContext.Connect()
+        void IMBContext.Connect()
         {
             try
             {
@@ -36,38 +36,38 @@ namespace ModbusImp
             }
         }
 
-        void MBContext.Disconnect()
+        void IMBContext.Disconnect()
         {
             tcpSocket.Shutdown(SocketShutdown.Both);
             tcpSocket.Close();
         }
 
-        int MBContext.SendMsg(byte[] message)
+        int IMBContext.SendMsg(byte[] message)
         {
             int bytesSent = tcpSocket.Send(message);
             return bytesSent;
         }
 
-        int MBContext.RecieveMsg(ref byte[] buff)
+        int IMBContext.RecieveMsg(ref byte[] buff)
         { 
             int bytesRec = tcpSocket.Receive(buff);
             return bytesRec;
         }
 
-        byte[] MBContext.BuildMessage(byte slaveId, byte functionCode, byte[] data)
+        byte[] IMBContext.BuildMessage(byte slaveId, byte functionCode, byte[] data)
         {
             tcpRequest = new TCPRequest(slaveId, functionCode, data);
             return tcpRequest.RequestMsg;
         }
 
-        byte[] MBContext.GetContent(byte[] fullResponse, int expectedBytes)
+        byte[] IMBContext.GetContent(byte[] fullResponse, int expectedBytes)
         {
             _tcpResponse = new TCPResponse(fullResponse, expectedBytes);
             
             return _tcpResponse.data;
         }
 
-        int MBContext.GetHeader()
+        int IMBContext.GetHeader()
         {
             return tcpRequest.Header;
         }

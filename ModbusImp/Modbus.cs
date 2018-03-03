@@ -2,7 +2,7 @@
 
 namespace ModbusImp
 {
-    public class ModbusDevice<T> where T : MBContext
+    public class ModbusDevice<T> where T : IMBContext
     {
         private T cntx; // Modbus context
         public byte SlaveId { get; set; }

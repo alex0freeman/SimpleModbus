@@ -17,7 +17,7 @@ namespace ModbusImp.Service
         /// <summary>
         /// Current device context
         /// </summary>
-        private Dictionary<Tuple<string, ushort>, ModbusDevice<MBContext>> _device_contexts;
+        private Dictionary<Tuple<string, ushort>, ModbusDevice<IMBContext>> _device_contexts;
 
         ~ModbusImpl()
         {
@@ -40,7 +40,7 @@ namespace ModbusImp.Service
             // Register device context
             Transport<TCPContex>.Register(1, () => new TCPContex(address, port));
             var tcp = Transport<TCPContex>.Create(1);
-            _device_contexts.Add(device, new ModbusDevice<MBContext>(tcp, 1));
+            _device_contexts.Add(device, new ModbusDevice<IMBContext>(tcp, 1));
             
             // Initialize connection
             _device_contexts[device].Connect();

@@ -22,7 +22,7 @@ namespace ModbusImp.Tests
         private const string Hostname = "127.0.0.1";
         private const int Port = 5002;
 
-        private ModbusDevice<MBContext> SlaveDeviceContext;
+        private ModbusDevice<IMBContext> SlaveDeviceContext;
 
         /// <summary>
         /// Initialize connection context
@@ -32,7 +32,7 @@ namespace ModbusImp.Tests
         {
             Transport<TCPContex>.Register(1, () => new TCPContex(Hostname, Port));
             var tcp = Transport<TCPContex>.Create(1);
-            SlaveDeviceContext = new ModbusDevice<MBContext>(tcp, 1);
+            SlaveDeviceContext = new ModbusDevice<IMBContext>(tcp, 1);
             
             SlaveDeviceContext.Connect();
         }
