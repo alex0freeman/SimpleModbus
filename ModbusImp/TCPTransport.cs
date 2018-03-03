@@ -15,8 +15,6 @@ namespace ModbusImp
         private Socket tcpSocket;
         TCPRequest tcpRequest;
         TCPResponce tcpResponce;
-        int expectedResponceBytes;
-
 
         public TCPContex(string ip, ushort port)
         {
@@ -74,6 +72,11 @@ namespace ModbusImp
             tcpResponce = new TCPResponce(fullResponce, expectedBytes);
             
             return tcpResponce.data;
+        }
+
+        int MBContext.GetHeader()
+        {
+            return tcpRequest.Header;
         }
 
 

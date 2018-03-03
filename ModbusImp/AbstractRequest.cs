@@ -10,7 +10,7 @@ namespace ModbusImp
     public abstract class Request
     {
         protected const ushort maxLengthMsg = 256;
-        protected int header;
+        public int Header { get; protected set; }
         protected byte slaveId;
         protected byte functionCode;
         protected int dataLength;

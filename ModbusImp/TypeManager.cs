@@ -32,11 +32,43 @@ namespace ModbusImp
                 case ((byte)MbFunctions.ReadHoldingRegisters):
                 case ((byte)MbFunctions.ReadInputRegister):
                     return 1 + elementsCnt * sizeof(short);
-
+                case ((byte)MbFunctions.WriteMultiplyCoils):
+                case ((byte)MbFunctions.WriteMultiplyHoldingRegisters):
+                    return 3;
                 default:
                     return 0;
             }
         }
+
+
+        public static bool[] ParseDiscretes(byte[] responseData, int count)
+        {
+            bool[] discreteArray = new bool[count];
+            for (int i = 0; i < count; i++)
+            {
+                int cur = (i >= 8) ? 0 : i;
+                byte bitMask = (byte)(1 << cur);
+                discreteArray[i] = Convert.ToBoolean(responseData[(i / 8)] & bitMask);
+            }
+            return discreteArray;
+        }
+
+
+        public static short[] ParseRegisters(byte[] responseData, int count)
+        {
+            short[] registersArray = new short[count];
+
+            Buffer.BlockCopy(responseData, 0, registersArray, 0, responseData.Length);
+            return registersArray.Select(x => ReverseBytes(x)).ToArray();
+        }
+
+
+        public static short ReverseBytes(short value)
+        {
+            return (short)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+        }
+
+
 
     }
 }

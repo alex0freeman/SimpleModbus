@@ -15,8 +15,8 @@ namespace ModbusImp
 
         public TCPRequest(byte slaveId, byte functionCode, byte[] requestData) : base(slaveId, functionCode, requestData)
         {
-            header = 8;
-            RequestMsg = new byte[header + dataLength];
+            Header = 8;
+            RequestMsg = new byte[Header + dataLength];
             transactionId++;
             length = 2 + dataLength;
      //       ExpectedBytes = header + GetExpectedBytesByFunction(functionCode);
@@ -33,7 +33,7 @@ namespace ModbusImp
             RequestMsg[5] = (byte)(length);
             RequestMsg[6] = (slaveId);
             RequestMsg[7] = (functionCode);
-            Array.Copy(data, 0, RequestMsg, header, data.Length);
+            Array.Copy(data, 0, RequestMsg, Header, data.Length);
             Console.WriteLine(BitConverter.ToString(RequestMsg));
         }
 

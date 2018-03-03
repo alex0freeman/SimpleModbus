@@ -62,40 +62,67 @@ namespace ModbusImp
 
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct WriteSingleCoil
+    struct MBWriteSingleCoil
     {
-        public ushort startAddress;
+        public ushort address;
         public ushort writeValue;
+
+        public MBWriteSingleCoil(ushort address, ushort writeValue)
+        {
+            this.address = BitConverter.ToUInt16((BitConverter.GetBytes(address)).Reverse().ToArray(), 0); ;
+            this.writeValue = BitConverter.ToUInt16((BitConverter.GetBytes(writeValue)).Reverse().ToArray(), 0); ;
+        }
     }
 
 
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct WriteSingleRegister
+    struct MBWriteSingleRegister
     {
-        public ushort startAddress;
+        public ushort address;
         public ushort writeValue;
+
+        public MBWriteSingleRegister(ushort address, ushort writeValue)
+        {
+            this.address = BitConverter.ToUInt16((BitConverter.GetBytes(address)).Reverse().ToArray(), 0); 
+            this.writeValue = BitConverter.ToUInt16((BitConverter.GetBytes(writeValue)).Reverse().ToArray(), 0); 
+        }
     }
 
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct WriteMultiplyCoils
+    struct MBWriteMultiplyCoils
     {
         public ushort startAddress;
         public ushort countItems;
         public byte nextByteCount;
         public byte[] data;
 
+        public MBWriteMultiplyCoils(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        {
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); 
+            this.countItems = BitConverter.ToUInt16((BitConverter.GetBytes(countItems)).Reverse().ToArray(), 0);
+            this.nextByteCount = nextByteCount;
+            this.data = data;
+        }
     }
 
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct WriteMultiplyHoldingRegisters
+    struct MBWriteMultiplyHoldingRegisters
     {
         public ushort startAddress { get; set; }
         public ushort countItems { get; set; }
         public byte nextByteCount;
         public byte[] data;
+
+        public MBWriteMultiplyHoldingRegisters(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        {
+            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0);
+            this.countItems = BitConverter.ToUInt16((BitConverter.GetBytes(countItems)).Reverse().ToArray(), 0);
+            this.nextByteCount = nextByteCount;
+            this.data = data;
+        }
     }
 
 
