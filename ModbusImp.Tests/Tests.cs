@@ -44,59 +44,67 @@ namespace ModbusImp.Tests
         }
 
         [Test]
-        public void TestReadCoils()
+        [Category("Read")]
+        public void TestRandomReadCoils()
         {
-            var coils = SlaveDeviceContext.ReadCoils(0, 2);
+            const int registersToRead = 2;
+            var coils = SlaveDeviceContext.ReadCoils(0, registersToRead);
 
-            System.Diagnostics.Debug.WriteLine("Read coils:");
+            Console.WriteLine("Read coils:");
             foreach (var coil in coils)
             {
-                System.Diagnostics.Debug.Write("{0} ", coil.ToString());
+                Console.Write("{0} ", coil.ToString());
             }
             
-            Assert.True(true);
+            Assert.AreEqual(coils.Length, registersToRead);
         }
         
         [Test]
-        public void TestReadDiscreteInputs()
+        [Category("Read")]
+        public void TestRandomReadDiscreteInputs()
         {
-            var discreteInputs = SlaveDeviceContext.ReadInput(0, 15);
+            const int registersToRead = 15;
+            var discreteInputs = SlaveDeviceContext.ReadDiscreteInputs(0, registersToRead);
 
-            System.Diagnostics.Debug.WriteLine("Read discrete inputs:");
+            Console.WriteLine("Read discrete inputs:");
             foreach (var input in discreteInputs)
             {
-                System.Diagnostics.Debug.Write("{0} ", input.ToString());
+                Console.Write("{0} ", input.ToString());
             }
             
-            Assert.True(true);
+            Assert.AreEqual(discreteInputs.Length, registersToRead);
         }
         
         [Test]
+        [Category("Read")]
         public void TestReadInputs()
         {
-            var inputs = SlaveDeviceContext.ReadInputRegisters(0, 10);
+            const int registersToRead = 10;
+            var inputs = SlaveDeviceContext.ReadInputs(0, registersToRead);
 
-            System.Diagnostics.Debug.WriteLine("Read input registers:");
+            Console.WriteLine("Read input registers:");
             foreach (var input in inputs)
             {
-                System.Diagnostics.Debug.Write("{0} ", input.ToString());
+                Console.Write("{0} ", input.ToString());
             }
             
-            Assert.True(true);
+            Assert.AreEqual(inputs.Length, registersToRead);
         }
         
         [Test]
+        [Category("Read")]
         public void TestReadHoldings()
         {
-            var holdings = SlaveDeviceContext.ReadHoldingRegisters(0, 10);
+            const int registersToRead = 10;
+            var holdings = SlaveDeviceContext.ReadHoldings(0, registersToRead);
 
-            System.Diagnostics.Debug.WriteLine("Read input registers:");
+            Console.WriteLine("Read input registers:");
             foreach (var holding in holdings)
             {
-                System.Diagnostics.Debug.Write("{0} ", holding.ToString());
+                Console.Write("{0} ", holding.ToString());
             }
             
-            Assert.True(true);
+            Assert.AreEqual(holdings.Length, registersToRead);
         }
     }
 }

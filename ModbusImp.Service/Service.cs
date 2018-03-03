@@ -73,7 +73,7 @@ namespace ModbusImp.Service
                     seq = Array.ConvertAll(resultCoil, b => b ? (byte) 1 : (byte) 0);
                     break;
                 case ModbusRegisters.DiscreteInput:
-                    var resultInput = device_context.ReadInput(startAddress, readCnt);
+                    var resultInput = device_context.ReadDiscreteInputs(startAddress, readCnt);
                     seq = Array.ConvertAll(resultInput, b => b ? (byte) 1 : (byte) 0);
                     break;
                 case ModbusRegisters.Holding:

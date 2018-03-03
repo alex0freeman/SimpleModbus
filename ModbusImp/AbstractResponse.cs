@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModbusImp
 {
@@ -19,7 +15,6 @@ namespace ModbusImp
             bool errorExist = false;
             private void Handle(byte functionCode)
             {
-
                 var errorCode = functionCode - 128;
                 if (errorExist = Enum.IsDefined(typeof(MbErrors), errorCode))
                 {
@@ -44,5 +39,4 @@ namespace ModbusImp
             }
         }
     }
-
 }

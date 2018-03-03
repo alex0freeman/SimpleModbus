@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 
 //TODO Reverse Bytes in TypeManager
@@ -107,7 +104,6 @@ namespace ModbusImp
         }
     }
 
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBWriteMultiplyHoldingRegisters
     {
@@ -124,9 +120,4 @@ namespace ModbusImp
             this.data = data;
         }
     }
-
-
-
-
-
 }

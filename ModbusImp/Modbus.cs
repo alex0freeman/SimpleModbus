@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace ModbusImp
 {
@@ -54,27 +48,27 @@ namespace ModbusImp
             return TypeManager<MBReadCoils>.ParseDiscretes(coils, itemCount);
         }
 
-        public bool[] ReadInput(ushort startAddress, ushort itemCount)
+        public bool[] ReadDiscreteInputs(ushort startAddress, ushort itemCount)
         {
             MBReadDiscretes discretesData = new MBReadDiscretes(startAddress, itemCount);
-            expectedResponseBytes = TypeManager<MBReadDiscretes>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputs, itemCount);
-            byte[] discreteInputs = Read((byte)MbFunctions.ReadInputs, TypeManager<MBReadDiscretes>.ToBytes(discretesData));
+            expectedResponseBytes = TypeManager<MBReadDiscretes>.GetExpectedBytesByFunction((int)MbFunctions.ReadDiscreteInputs, itemCount);
+            byte[] discreteInputs = Read((byte)MbFunctions.ReadDiscreteInputs, TypeManager<MBReadDiscretes>.ToBytes(discretesData));
             return TypeManager<MBReadDiscretes>.ParseDiscretes(discreteInputs, itemCount);
         }
 
-        public short[] ReadInputRegisters(ushort startAddress, ushort itemCount)
+        public short[] ReadInputs(ushort startAddress, ushort itemCount)
         {
             MBReadInputRegisters intputRegisterData = new MBReadInputRegisters(startAddress, itemCount);
-            expectedResponseBytes = TypeManager<MBReadInputRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputRegister, itemCount);
-            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputRegister, TypeManager<MBReadInputRegisters>.ToBytes(intputRegisterData));
+            expectedResponseBytes = TypeManager<MBReadInputRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputs, itemCount);
+            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputs, TypeManager<MBReadInputRegisters>.ToBytes(intputRegisterData));
             return TypeManager<MBReadInputRegisters>.ParseRegisters(inputRegisters, itemCount);
         }
 
-        public short[] ReadHoldingRegisters(ushort startAddress, ushort itemCount)
+        public short[] ReadHoldings(ushort startAddress, ushort itemCount)
         {
             MBReadHoldingRegisters hodingRegistersData = new MBReadHoldingRegisters(startAddress, itemCount);
-            expectedResponseBytes = TypeManager<MBReadHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadHoldingRegisters, itemCount);
-            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldingRegisters, TypeManager<MBReadHoldingRegisters>.ToBytes(hodingRegistersData));
+            expectedResponseBytes = TypeManager<MBReadHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadHoldings, itemCount);
+            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldings, TypeManager<MBReadHoldingRegisters>.ToBytes(hodingRegistersData));
             return TypeManager<MBReadHoldingRegisters>.ParseRegisters(holdingRegisters, itemCount);
         }
 
@@ -88,7 +82,7 @@ namespace ModbusImp
         public bool WriteSingleRegister(ushort address, ushort value)
         {
             MBWriteSingleCoil writeCoilData = new MBWriteSingleCoil(address, value);
-            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleRegister, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
             return writeResult;
         }
 
@@ -117,6 +111,5 @@ namespace ModbusImp
         {
             cntx.Disconnect();
         }
-
     }
 }

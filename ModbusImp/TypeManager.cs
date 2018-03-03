@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModbusImp
 {
@@ -11,7 +8,6 @@ namespace ModbusImp
     {
         public static byte[] ToBytes(T type)
         {
-            
             int size = Marshal.SizeOf(type);
             byte[] array = new byte[size];
             IntPtr ptr = Marshal.AllocHGlobal(size);
@@ -23,23 +19,21 @@ namespace ModbusImp
 
         public static int GetExpectedBytesByFunction(int function, int elementsCnt)
         {
-
             switch (function)
             {
-                case ((byte)MbFunctions.ReadCoils):
-                case ((byte)MbFunctions.ReadInputs):
+                case (byte)MbFunctions.ReadCoils:
+                case (byte)MbFunctions.ReadDiscreteInputs:
                     return 1 + ((elementsCnt >= 8) ? (elementsCnt / 8 + 1) : 1);
-                case ((byte)MbFunctions.ReadHoldingRegisters):
-                case ((byte)MbFunctions.ReadInputRegister):
+                case (byte)MbFunctions.ReadHoldings:
+                case (byte)MbFunctions.ReadInputs:
                     return 1 + elementsCnt * sizeof(short);
-                case ((byte)MbFunctions.WriteMultiplyCoils):
-                case ((byte)MbFunctions.WriteMultiplyHoldingRegisters):
+                case (byte)MbFunctions.WriteMultiplyCoils:
+                case (byte)MbFunctions.WriteMultiplyHoldingRegisters:
                     return 3;
                 default:
                     return 0;
             }
         }
-
 
         public static bool[] ParseDiscretes(byte[] responseData, int count)
         {
@@ -53,7 +47,6 @@ namespace ModbusImp
             return discreteArray;
         }
 
-
         public static short[] ParseRegisters(byte[] responseData, int count)
         {
             short[] registersArray = new short[count];
@@ -62,13 +55,9 @@ namespace ModbusImp
             return registersArray.Select(x => ReverseBytes(x)).ToArray();
         }
 
-
         public static short ReverseBytes(short value)
         {
             return (short)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
         }
-
-
-
     }
 }

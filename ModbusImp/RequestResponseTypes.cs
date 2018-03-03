@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace ModbusImp
 {
@@ -13,7 +11,6 @@ namespace ModbusImp
         byte nextBytesCnt { get; set; }
         public byte[] readCnt { get; set; }
 
-
         public MBReadResponse(byte[] request)
         {
             slaveId = request[0];
@@ -23,6 +20,4 @@ namespace ModbusImp
             Array.Copy(request, 3, readCnt, 0, request.Length - 3);
         }
     }
-
 }
-

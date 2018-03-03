@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ModbusImp
+﻿namespace ModbusImp
 {
     enum MbErrors
     {
@@ -23,13 +17,12 @@ namespace ModbusImp
     enum MbFunctions
     {
         ReadCoils = 1,
+        ReadDiscreteInputs,
+        ReadHoldings,
         ReadInputs,
-        ReadHoldingRegisters,
-        ReadInputRegister,
         WriteSingleCoil,
-        WriteSingleReister,
+        WriteSingleRegister,
         WriteMultiplyCoils = 15,
         WriteMultiplyHoldingRegisters
     };
-
 }

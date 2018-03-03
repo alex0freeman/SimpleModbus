@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModbusImp
 {
@@ -19,7 +14,7 @@ namespace ModbusImp
             RequestMsg = new byte[Header + dataLength];
             transactionId++;
             length = 2 + dataLength;
-     //       ExpectedBytes = header + GetExpectedBytesByFunction(functionCode);
+            //ExpectedBytes = header + GetExpectedBytesByFunction(functionCode);
             Build(requestData);
         }
 
