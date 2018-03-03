@@ -15,8 +15,6 @@ namespace ModbusImp
         private Socket tcpSocket;
         TCPRequest tcpRequest;
         TCPResponce tcpResponce;
-        int expectedResponceBytes;
-
 
         public TCPContex(string ip, ushort port)
         {
@@ -61,19 +59,24 @@ namespace ModbusImp
             return bytesRec;
         }
 
-        byte[] MBContext.BuildMessage(byte slaveId, byte functionCode, ushort startAddress, ushort readCnt)
+        byte[] MBContext.BuildMessage(byte slaveId, byte functionCode, byte[] data)
         {
-            tcpRequest = new TCPRequest(slaveId, functionCode, startAddress, readCnt);
+            tcpRequest = new TCPRequest(slaveId, functionCode, data);
             return tcpRequest.RequestMsg;
         }
 
     
 
-        byte[] MBContext.GetContent(byte[] fullResponce)
+        byte[] MBContext.GetContent(byte[] fullResponce, int expectedBytes)
         {
-            tcpResponce = new TCPResponce(fullResponce, tcpRequest.ExpectedBytes);
+            tcpResponce = new TCPResponce(fullResponce, expectedBytes);
             
             return tcpResponce.data;
+        }
+
+        int MBContext.GetHeader()
+        {
+            return tcpRequest.Header;
         }
 
 

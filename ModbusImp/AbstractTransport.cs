@@ -12,8 +12,9 @@ namespace ModbusImp
         void Disconnect();
         int SendMsg(byte[] msg);
         int RecieveMsg(ref byte[] buff);
-        byte[] BuildMessage(byte slaveId, byte functionCode, ushort startAddress, ushort readCnt);
-        byte[] GetContent(byte[] fullResponce);
+        byte[] BuildMessage(byte slaveId, byte functionCode, byte[] data);
+        byte[] GetContent(byte[] fullResponce, int expectedBytes);
+        int GetHeader(); 
     }
 
     public class Transport<T>

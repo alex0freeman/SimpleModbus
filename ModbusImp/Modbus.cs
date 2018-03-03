@@ -12,6 +12,7 @@ namespace ModbusImp
     {
         private T cntx; // Modbus context
         public byte SlaveId { get; set; }
+        public int expectedResponseBytes;
         public ModbusDevice(T cntx, byte slaveId)
         {
             this.cntx = cntx;
@@ -19,69 +20,93 @@ namespace ModbusImp
         }
 
         // Read data from current context
-        private byte[] Read(byte funcNumber, ushort startAddress, ushort numItems)
+        private byte[] Read(byte funcNumber, byte[] data)
         {
-            byte[] buff = new byte[256]; // Buffer to save response
-            byte[] message = cntx.BuildMessage(SlaveId, funcNumber, startAddress, numItems);
+            byte[] message = cntx.BuildMessage(SlaveId, funcNumber, data);
+            expectedResponseBytes += cntx.GetHeader();
+            byte[] response = new byte[expectedResponseBytes];
             cntx.SendMsg(message);
-            int cnt = cntx.RecieveMsg(ref buff);
-            byte[] responce = new byte[cnt];
-            Array.Copy(buff, responce, cnt);
-            return cntx.GetContent(responce); ;
+            int cnt = cntx.RecieveMsg(ref response);
+            return cntx.GetContent(response, expectedResponseBytes);
         }
 
-
-        private bool[] ParseDiscretes(byte[] responseData, int count)
+        bool WriteSingle(byte functionCode, byte[] data)
         {
-            bool[] discreteArray = new bool[count];
-            for (int i = 0; i < count; i++)
-            {
-                int cur = (i >= 8) ? 0 : i;
-                byte bitMask = (byte)(1 << cur);
-                discreteArray[i] = Convert.ToBoolean(responseData[(i/8)] & bitMask);
-            }
-
-            return discreteArray;
+            byte[] message = cntx.BuildMessage(SlaveId, functionCode, data);
+            expectedResponseBytes = message.Length;
+            byte[] response = new byte[expectedResponseBytes];
+            cntx.SendMsg(message);
+            int cnt = cntx.RecieveMsg(ref response);
+            return Enumerable.SequenceEqual(response, message);
         }
-
-        private short ReverseBytes(short value)
+        
+        int WriteMultiply(byte functionCode, byte[] data)
         {
-            return (short)((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
-        }
-
-        private short[] ParseRegisters(byte[] responseData, int count)
-        {
-            short[] registersArray = new short[count];
-
-            Buffer.BlockCopy(responseData, 0, registersArray, 0, responseData.Length);
-            return registersArray.Select(x => ReverseBytes(x)).ToArray();
+            byte[] content = Read(functionCode, data);
+            return content.Last();
         }
 
         public bool[] ReadCoils(ushort startAddress, ushort itemCount)
         {
-            byte[] coils = Read((byte)MbFunctions.ReadCoils, startAddress, itemCount);           
-            return ParseDiscretes(coils, itemCount);
+            MBReadCoils coilsData = new MBReadCoils(startAddress, itemCount);
+            expectedResponseBytes = TypeManager<MBReadCoils>.GetExpectedBytesByFunction((int)MbFunctions.ReadCoils, itemCount);
+            byte[] coils = Read((byte)MbFunctions.ReadCoils, TypeManager<MBReadCoils>.ToBytes(coilsData));
+            return TypeManager<MBReadCoils>.ParseDiscretes(coils, itemCount);
         }
 
         public bool[] ReadInput(ushort startAddress, ushort itemCount)
         {
-            byte[] discreteInputs = Read((byte)MbFunctions.ReadInputs, startAddress, itemCount);
-            Console.WriteLine(BitConverter.ToString(discreteInputs));
-            return ParseDiscretes(discreteInputs, itemCount);
+            MBReadDiscretes discretesData = new MBReadDiscretes(startAddress, itemCount);
+            expectedResponseBytes = TypeManager<MBReadDiscretes>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputs, itemCount);
+            byte[] discreteInputs = Read((byte)MbFunctions.ReadInputs, TypeManager<MBReadDiscretes>.ToBytes(discretesData));
+            return TypeManager<MBReadDiscretes>.ParseDiscretes(discreteInputs, itemCount);
         }
 
         public short[] ReadInputRegisters(ushort startAddress, ushort itemCount)
         {
-            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputRegister, startAddress, itemCount);
-            return ParseRegisters(inputRegisters, itemCount);
+            MBReadInputRegisters intputRegisterData = new MBReadInputRegisters(startAddress, itemCount);
+            expectedResponseBytes = TypeManager<MBReadInputRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputRegister, itemCount);
+            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputRegister, TypeManager<MBReadInputRegisters>.ToBytes(intputRegisterData));
+            return TypeManager<MBReadInputRegisters>.ParseRegisters(inputRegisters, itemCount);
         }
 
         public short[] ReadHoldingRegisters(ushort startAddress, ushort itemCount)
         {
-            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldingRegisters, startAddress, itemCount);
-            return ParseRegisters(holdingRegisters, itemCount);
+            MBReadHoldingRegisters hodingRegistersData = new MBReadHoldingRegisters(startAddress, itemCount);
+            expectedResponseBytes = TypeManager<MBReadHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadHoldingRegisters, itemCount);
+            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldingRegisters, TypeManager<MBReadHoldingRegisters>.ToBytes(hodingRegistersData));
+            return TypeManager<MBReadHoldingRegisters>.ParseRegisters(holdingRegisters, itemCount);
         }
 
+        public bool WriteSingleCoil(ushort address, ushort value)
+        {
+            MBWriteSingleCoil writeCoilData = new MBWriteSingleCoil(address, value);
+            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            return writeResult;
+        }
+
+        public bool WriteSingleRegister(ushort address, ushort value)
+        {
+            MBWriteSingleCoil writeCoilData = new MBWriteSingleCoil(address, value);
+            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            return writeResult;
+        }
+
+        public int WriteMultiplyCoils(ushort address, ushort countItems, byte nextByteCount, byte[] data)
+        {
+            MBWriteMultiplyCoils writeCoilsData = new MBWriteMultiplyCoils(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteMultiplyCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteMultiplyCoils, countItems);
+            int writeCountBytes = WriteMultiply((byte)MbFunctions.WriteMultiplyCoils, TypeManager<MBWriteMultiplyCoils>.ToBytes(writeCoilsData));
+            return writeCountBytes;
+        }
+
+        public int WriteMultiplyRegisters(ushort address, ushort countItems, byte nextByteCount, byte[] data)
+        {
+            MBWriteMultiplyHoldingRegisters writeRegistersData = new MBWriteMultiplyHoldingRegisters(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteMultiplyHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.WriteMultiplyHoldingRegisters, countItems);
+            int writeCountBytes = WriteMultiply((byte)MbFunctions.WriteMultiplyHoldingRegisters, TypeManager<MBWriteMultiplyHoldingRegisters>.ToBytes(writeRegistersData));
+            return writeCountBytes;
+        }
 
         public void Connect()
         {

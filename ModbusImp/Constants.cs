@@ -25,7 +25,11 @@ namespace ModbusImp
         ReadCoils = 1,
         ReadInputs,
         ReadHoldingRegisters,
-        ReadInputRegister
+        ReadInputRegister,
+        WriteSingleCoil,
+        WriteSingleReister,
+        WriteMultiplyCoils = 15,
+        WriteMultiplyHoldingRegisters
     };
 
 }

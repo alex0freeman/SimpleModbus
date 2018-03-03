@@ -10,22 +10,20 @@ namespace ModbusImp
     public class TCPRequest : Request
     {
         private ushort protocolId = 0;
-        private int StartDataIndex;
         private int length;
         public static ushort transactionId { get; private set; } = 0;
 
-        public TCPRequest(byte slaveId, byte functionCode, ushort startAddress, ushort readCnt) : base (slaveId, functionCode, startAddress, readCnt)
+        public TCPRequest(byte slaveId, byte functionCode, byte[] requestData) : base(slaveId, functionCode, requestData)
         {
-            header = 6;
-            StartDataIndex = header;
-            RequestMsg = new byte[header + BytesCnt()];  // [+byteSequenceCnt]
+            Header = 8;
+            RequestMsg = new byte[Header + dataLength];
             transactionId++;
-            length = BytesCnt();
-            Build();
-            ExpectedBytes = header + responceExectedHeader + GetExpectedBytesByFunction(functionCode, readCnt);
+            length = 2 + dataLength;
+     //       ExpectedBytes = header + GetExpectedBytesByFunction(functionCode);
+            Build(requestData);
         }
 
-        protected override void Build()
+        protected override void Build(byte[] data)
         {
             RequestMsg[0] = (byte)(transactionId >> 8);
             RequestMsg[1] = (byte)(transactionId);
@@ -33,8 +31,10 @@ namespace ModbusImp
             RequestMsg[3] = (byte)(protocolId);
             RequestMsg[4] = (byte)(length >> 8);
             RequestMsg[5] = (byte)(length);
-            Array.Copy(GetBytes(), 0, RequestMsg, StartDataIndex, length);
-         
+            RequestMsg[6] = (slaveId);
+            RequestMsg[7] = (functionCode);
+            Array.Copy(data, 0, RequestMsg, Header, data.Length);
+            Console.WriteLine(BitConverter.ToString(RequestMsg));
         }
 
         public override int GetMsgLenth()
