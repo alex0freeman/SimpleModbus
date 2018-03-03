@@ -27,8 +27,8 @@ namespace ModbusImp
                 case (byte)MbFunctions.ReadHoldings:
                 case (byte)MbFunctions.ReadInputs:
                     return 1 + elementsCnt * sizeof(short);
-                case (byte)MbFunctions.WriteMultiplyCoils:
-                case (byte)MbFunctions.WriteMultiplyHoldingRegisters:
+                case (byte)MbFunctions.WriteCoils:
+                case (byte)MbFunctions.WriteHoldings:
                     return 3;
                 default:
                     return 0;

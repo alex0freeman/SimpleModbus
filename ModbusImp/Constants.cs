@@ -12,7 +12,7 @@
         MemoryParityError,
         GatewayPathUnavailable,
         GatewayTargetdeviceFailedToRespond
-    };
+    }
 
     enum MbFunctions
     {
@@ -21,8 +21,8 @@
         ReadHoldings,
         ReadInputs,
         WriteSingleCoil,
-        WriteSingleRegister,
-        WriteMultiplyCoils = 15,
-        WriteMultiplyHoldingRegisters
-    };
+        WriteSingleHolding,
+        WriteCoils = 15,
+        WriteHoldings
+    }
 }

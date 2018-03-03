@@ -2,30 +2,29 @@
 
 namespace ModbusImp
 {
-  
-    class TCPResponce : Response
+    class TCPResponse : Response
     {
         const int mbapHeader = 6;
-        public TCPResponce(byte[] responce, int expected)
+        
+        public TCPResponse(byte[] response, int expected)
         {
-            byte[] message = new byte[responce.Length - mbapHeader];
-            Array.Copy(responce, mbapHeader, message, 0, message.Length);
+            byte[] message = new byte[response.Length - mbapHeader];
+            Array.Copy(response, mbapHeader, message, 0, message.Length);
 
-            if (responce.Length != expected)
+            if (response.Length != expected)
             {
-                Console.WriteLine("{0} {1}", responce.Length, expected);
-                var Error = new ErrorHandling(responce, 8);
+                Console.WriteLine("{0} {1}", response.Length, expected);
+                var Error = new ErrorHandling(response, 8);
             }
             else
             {
                 TryParse(message, out data);
-
             }
         }
 
-        protected override void TryParse(byte[] responce, out byte[] result)
+        protected override void TryParse(byte[] response, out byte[] result)
         {
-            MBReadResponse res = new MBReadResponse(responce);
+            MBReadResponse res = new MBReadResponse(response);
             result = res.readCnt;
         }
     }

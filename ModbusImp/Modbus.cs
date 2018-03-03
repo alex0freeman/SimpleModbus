@@ -44,7 +44,7 @@ namespace ModbusImp
         {
             MBReadCoils coilsData = new MBReadCoils(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadCoils>.GetExpectedBytesByFunction((int)MbFunctions.ReadCoils, itemCount);
-            byte[] coils = Read((byte)MbFunctions.ReadCoils, TypeManager<MBReadCoils>.ToBytes(coilsData));
+            var coils = Read((byte)MbFunctions.ReadCoils, TypeManager<MBReadCoils>.ToBytes(coilsData));
             return TypeManager<MBReadCoils>.ParseDiscretes(coils, itemCount);
         }
 
@@ -52,7 +52,7 @@ namespace ModbusImp
         {
             MBReadDiscretes discretesData = new MBReadDiscretes(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadDiscretes>.GetExpectedBytesByFunction((int)MbFunctions.ReadDiscreteInputs, itemCount);
-            byte[] discreteInputs = Read((byte)MbFunctions.ReadDiscreteInputs, TypeManager<MBReadDiscretes>.ToBytes(discretesData));
+            var discreteInputs = Read((byte)MbFunctions.ReadDiscreteInputs, TypeManager<MBReadDiscretes>.ToBytes(discretesData));
             return TypeManager<MBReadDiscretes>.ParseDiscretes(discreteInputs, itemCount);
         }
 
@@ -60,7 +60,7 @@ namespace ModbusImp
         {
             MBReadInputRegisters intputRegisterData = new MBReadInputRegisters(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadInputRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadInputs, itemCount);
-            byte[] inputRegisters = Read((byte)MbFunctions.ReadInputs, TypeManager<MBReadInputRegisters>.ToBytes(intputRegisterData));
+            var inputRegisters = Read((byte)MbFunctions.ReadInputs, TypeManager<MBReadInputRegisters>.ToBytes(intputRegisterData));
             return TypeManager<MBReadInputRegisters>.ParseRegisters(inputRegisters, itemCount);
         }
 
@@ -68,37 +68,37 @@ namespace ModbusImp
         {
             MBReadHoldingRegisters hodingRegistersData = new MBReadHoldingRegisters(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.ReadHoldings, itemCount);
-            byte[] holdingRegisters = Read((byte)MbFunctions.ReadHoldings, TypeManager<MBReadHoldingRegisters>.ToBytes(hodingRegistersData));
+            var holdingRegisters = Read((byte)MbFunctions.ReadHoldings, TypeManager<MBReadHoldingRegisters>.ToBytes(hodingRegistersData));
             return TypeManager<MBReadHoldingRegisters>.ParseRegisters(holdingRegisters, itemCount);
         }
 
         public bool WriteSingleCoil(ushort address, ushort value)
         {
-            MBWriteSingleCoil writeCoilData = new MBWriteSingleCoil(address, value);
-            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            var writeCoilData = new MBWriteSingleCoil(address, value);
+            var writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
             return writeResult;
         }
 
-        public bool WriteSingleRegister(ushort address, ushort value)
+        public bool WriteSingleHolding(ushort address, ushort value)
         {
-            MBWriteSingleCoil writeCoilData = new MBWriteSingleCoil(address, value);
-            bool writeResult = WriteSingle((byte)MbFunctions.WriteSingleRegister, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            var writeHoldingData = new MBWriteSingleHolding(address, value);
+            var writeResult = WriteSingle((byte)MbFunctions.WriteSingleHolding, TypeManager<MBWriteSingleHolding>.ToBytes(writeHoldingData));
             return writeResult;
         }
 
-        public int WriteMultiplyCoils(ushort address, ushort countItems, byte nextByteCount, byte[] data)
+        public int WriteCoils(ushort address, ushort countItems, byte nextByteCount, byte[] data)
         {
-            MBWriteMultiplyCoils writeCoilsData = new MBWriteMultiplyCoils(address, countItems, nextByteCount, data);
-            expectedResponseBytes = TypeManager<MBWriteMultiplyCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteMultiplyCoils, countItems);
-            int writeCountBytes = WriteMultiply((byte)MbFunctions.WriteMultiplyCoils, TypeManager<MBWriteMultiplyCoils>.ToBytes(writeCoilsData));
+            var writeCoilsData = new MBWriteMultiplyCoils(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteMultiplyCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteCoils, countItems);
+            var writeCountBytes = WriteMultiply((byte)MbFunctions.WriteCoils, TypeManager<MBWriteMultiplyCoils>.ToBytes(writeCoilsData));
             return writeCountBytes;
         }
 
-        public int WriteMultiplyRegisters(ushort address, ushort countItems, byte nextByteCount, byte[] data)
+        public int WriteHoldings(ushort address, ushort countItems, byte nextByteCount, byte[] data)
         {
-            MBWriteMultiplyHoldingRegisters writeRegistersData = new MBWriteMultiplyHoldingRegisters(address, countItems, nextByteCount, data);
-            expectedResponseBytes = TypeManager<MBWriteMultiplyHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.WriteMultiplyHoldingRegisters, countItems);
-            int writeCountBytes = WriteMultiply((byte)MbFunctions.WriteMultiplyHoldingRegisters, TypeManager<MBWriteMultiplyHoldingRegisters>.ToBytes(writeRegistersData));
+            var writeHoldingsData = new MBWriteMultiplyHoldingRegisters(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteMultiplyHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.WriteHoldings, countItems);
+            var writeCountBytes = WriteMultiply((byte)MbFunctions.WriteHoldings, TypeManager<MBWriteMultiplyHoldingRegisters>.ToBytes(writeHoldingsData));
             return writeCountBytes;
         }
 

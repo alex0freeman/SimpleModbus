@@ -77,7 +77,7 @@ namespace ModbusImp.Tests
         
         [Test]
         [Category("Read")]
-        public void TestReadInputs()
+        public void TestRandomReadInputs()
         {
             const int registersToRead = 10;
             var inputs = SlaveDeviceContext.ReadInputs(0, registersToRead);
@@ -93,7 +93,7 @@ namespace ModbusImp.Tests
         
         [Test]
         [Category("Read")]
-        public void TestReadHoldings()
+        public void TestRandomReadHoldings()
         {
             const int registersToRead = 10;
             var holdings = SlaveDeviceContext.ReadHoldings(0, registersToRead);
@@ -105,6 +105,42 @@ namespace ModbusImp.Tests
             }
             
             Assert.AreEqual(holdings.Length, registersToRead);
+        }
+        
+        [Test]
+        [Category("Write")]
+        public void TestWriteSingleCoil()
+        {
+            const ushort value = 19;
+            var result = SlaveDeviceContext.WriteSingleCoil(1, value);
+
+            Console.WriteLine("Write single coil: {0}", result);
+            
+            Assert.AreEqual(result, true);
+        }
+        
+        [Test]
+        [Category("Write")]
+        public void TestWriteSingleHolding()
+        {
+            const ushort value = 19;
+            var result = SlaveDeviceContext.WriteSingleHolding(1, value);
+
+            Console.WriteLine("Write single holding: {0}", result);
+            
+            Assert.AreEqual(result, true);
+        }
+        
+        [Test]
+        [Category("Write")]
+        public void TestWriteCoils()
+        {
+            var data = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+            var result = SlaveDeviceContext.WriteCoils(1, (ushort)(data.Length-1), 2, data);
+
+            Console.WriteLine("Write coils: {0} bytes was written", result);
+            
+            Assert.AreEqual(result, data.Length);
         }
     }
 }

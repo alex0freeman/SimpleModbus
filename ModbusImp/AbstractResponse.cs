@@ -26,11 +26,11 @@ namespace ModbusImp
                 }
             }
 
-            internal ErrorHandling(byte[] responce, int minLength)
+            internal ErrorHandling(byte[] response, int minLength)
             {
-                if (responce.Length > minLength)
+                if (response.Length > minLength)
                 {
-                    Handle(responce[minLength]);
+                    Handle(response[minLength]);
                 }
                 else
                 {

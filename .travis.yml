@@ -1,0 +1,7 @@
+language: csharp
+solution: "./ModbusImp.sln"
+install:
+- travis_retry nuget restore -source "https://www.nuget.org/api/v2" ./ModbusImp.sln
+script:
+- xbuild ./ModbusImp.sln
+- mono ./ModbusImp/packages/xunit.runner.console*/tools/xunit.console.exe ./ModbusImp.Tests/bin/Debug/ModbusImp.Tests.dll

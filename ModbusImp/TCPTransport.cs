@@ -10,7 +10,7 @@ namespace ModbusImp
         ushort Port;
         private Socket tcpSocket;
         TCPRequest tcpRequest;
-        TCPResponce tcpResponce;
+        TCPResponse _tcpResponse;
 
         public TCPContex(string ip, ushort port)
         {
@@ -60,11 +60,11 @@ namespace ModbusImp
             return tcpRequest.RequestMsg;
         }
 
-        byte[] MBContext.GetContent(byte[] fullResponce, int expectedBytes)
+        byte[] MBContext.GetContent(byte[] fullResponse, int expectedBytes)
         {
-            tcpResponce = new TCPResponce(fullResponce, expectedBytes);
+            _tcpResponse = new TCPResponse(fullResponse, expectedBytes);
             
-            return tcpResponce.data;
+            return _tcpResponse.data;
         }
 
         int MBContext.GetHeader()

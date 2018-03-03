@@ -10,7 +10,7 @@ namespace ModbusImp
         int SendMsg(byte[] msg);
         int RecieveMsg(ref byte[] buff);
         byte[] BuildMessage(byte slaveId, byte functionCode, byte[] data);
-        byte[] GetContent(byte[] fullResponce, int expectedBytes);
+        byte[] GetContent(byte[] fullResponse, int expectedBytes);
         int GetHeader(); 
     }
 

@@ -13,8 +13,8 @@ namespace ModbusImp
         public ushort readCnt;
         public MBReadCoils(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
-            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
+            this.readCnt = BitConverter.ToUInt16(BitConverter.GetBytes(readCnt).Reverse().ToArray(), 0);
         }
     }
 
@@ -26,8 +26,8 @@ namespace ModbusImp
 
         public MBReadDiscretes(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
-            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
+            this.readCnt = BitConverter.ToUInt16(BitConverter.GetBytes(readCnt).Reverse().ToArray(), 0);
         }
     }
 
@@ -39,8 +39,8 @@ namespace ModbusImp
 
         public MBReadInputRegisters(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
-            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
+            this.readCnt = BitConverter.ToUInt16(BitConverter.GetBytes(readCnt).Reverse().ToArray(), 0);
         }
     }
 
@@ -52,11 +52,10 @@ namespace ModbusImp
 
         public MBReadHoldingRegisters(ushort startAddress, ushort readCnt)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); ;
-            this.readCnt = BitConverter.ToUInt16((BitConverter.GetBytes(readCnt)).Reverse().ToArray(), 0); ;
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0); ;
+            this.readCnt = BitConverter.ToUInt16(BitConverter.GetBytes(readCnt).Reverse().ToArray(), 0);
         }
     }
-
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBWriteSingleCoil
@@ -66,26 +65,23 @@ namespace ModbusImp
 
         public MBWriteSingleCoil(ushort address, ushort writeValue)
         {
-            this.address = BitConverter.ToUInt16((BitConverter.GetBytes(address)).Reverse().ToArray(), 0); ;
-            this.writeValue = BitConverter.ToUInt16((BitConverter.GetBytes(writeValue)).Reverse().ToArray(), 0); ;
+            this.address = BitConverter.ToUInt16(BitConverter.GetBytes(address).Reverse().ToArray(), 0); ;
+            this.writeValue = BitConverter.ToUInt16(BitConverter.GetBytes(writeValue).Reverse().ToArray(), 0); ;
         }
     }
 
-
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MBWriteSingleRegister
+    struct MBWriteSingleHolding
     {
         public ushort address;
         public ushort writeValue;
 
-        public MBWriteSingleRegister(ushort address, ushort writeValue)
+        public MBWriteSingleHolding(ushort address, ushort writeValue)
         {
-            this.address = BitConverter.ToUInt16((BitConverter.GetBytes(address)).Reverse().ToArray(), 0); 
-            this.writeValue = BitConverter.ToUInt16((BitConverter.GetBytes(writeValue)).Reverse().ToArray(), 0); 
+            this.address = BitConverter.ToUInt16(BitConverter.GetBytes(address).Reverse().ToArray(), 0); 
+            this.writeValue = BitConverter.ToUInt16(BitConverter.GetBytes(writeValue).Reverse().ToArray(), 0); 
         }
     }
-
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBWriteMultiplyCoils
@@ -97,8 +93,8 @@ namespace ModbusImp
 
         public MBWriteMultiplyCoils(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0); 
-            this.countItems = BitConverter.ToUInt16((BitConverter.GetBytes(countItems)).Reverse().ToArray(), 0);
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0); 
+            this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);
             this.nextByteCount = nextByteCount;
             this.data = data;
         }
@@ -114,8 +110,8 @@ namespace ModbusImp
 
         public MBWriteMultiplyHoldingRegisters(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
         {
-            this.startAddress = BitConverter.ToUInt16((BitConverter.GetBytes(startAddress)).Reverse().ToArray(), 0);
-            this.countItems = BitConverter.ToUInt16((BitConverter.GetBytes(countItems)).Reverse().ToArray(), 0);
+            this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
+            this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);
             this.nextByteCount = nextByteCount;
             this.data = data;
         }
