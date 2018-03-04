@@ -1,6 +1,6 @@
 # Simple Modbus
 
-[![Travis Build Status](https://travis-ci.org/nunit/nunit.portable.agent.svg?branch=master)](https://travis-ci.org/nunit/nunit.portable.agent)
+[![Travis Build Status](https://travis-ci.org/jubnzv/SimpleModus.svg?branch=master)](https://travis-ci.org/jubnzv/SimpleModbus)
 
 Service using in local network to manage devices available on Modbus TCP protocol.
 

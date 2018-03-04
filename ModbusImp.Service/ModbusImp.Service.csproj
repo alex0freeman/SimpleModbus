@@ -47,6 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModbusContextMultiton.cs" />
     <Compile Include="ModbusTcp.cs" />
     <Compile Include="ModbusTcpGrpc.cs" />
     <Compile Include="Service.cs" />

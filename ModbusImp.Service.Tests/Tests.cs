@@ -20,7 +20,7 @@ namespace ModbusImp.Service.Tests
             // Disable SO_REUSEPORT to prevent https://github.com/grpc/grpc/issues/10755
             server = new Server(new[] { new ChannelOption(ChannelOptions.SoReuseport, 0) })
             {
-                Services = { ModbusTCP.BindService(new ModbusImp.Service.ModbusImpl()) },
+                Services = { ModbusTCP.BindService(new ModbusImpl()) },
                 Ports = { { Hostname, Port, ServerCredentials.Insecure } }
             };
             server.Start();
@@ -38,7 +38,7 @@ namespace ModbusImp.Service.Tests
         [Test]
         public void TestConnectDevice()
         {
-            var response = client.ConnectDevice(new ModbusImp.Service.ModbusConnectionRequest
+            var response = client.ConnectDevice(new ModbusConnectionRequest
             {
                 Ip = "localhost",
                 Port = 5002

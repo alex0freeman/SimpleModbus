@@ -4,31 +4,50 @@ using System.Net.Sockets;
 
 namespace ModbusImp
 {
-    public class TCPContex : IMBContext
+    /// <summary>
+    /// Modbus TCP device context
+    /// </summary>
+    public class TCPContext : IMBContext
     {
-        IPAddress Ip;
-        ushort Port;
-        private Socket tcpSocket;
-        TCPRequest tcpRequest;
-        TCPResponse _tcpResponse;
+        /// <summary>
+        /// IP address of Modbus device
+        /// </summary>
+        private IPAddress _ip;
 
-        public TCPContex(string ip, ushort port)
+        /// <summary>
+        /// Modbus port
+        /// </summary>
+        private ushort _port;
+
+        /// <summary>
+        /// TCP socket used in connection
+        /// </summary>
+        private Socket _tcpSocket;
+        
+        private TCPRequest _tcpRequest;
+        private TCPResponse _tcpResponse;
+        
+        public TCPContext(string ip, ushort port)
         {
-            if (!IPAddress.TryParse(ip, out Ip))
+            if (!IPAddress.TryParse(ip, out _ip))
             {
                 throw new Exception("Invalid IP address");
             }
-            Port = port;
+            _port = port;
+        }
+
+        string IMBContext.ConnectionCredentials()
+        {
+            return _ip + ":" + _port;
         }
 
         void IMBContext.Connect()
         {
             try
             {
-                IPEndPoint remoteEP = new IPEndPoint(Ip, Port);
-                tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                tcpSocket.Connect(remoteEP);
-                Console.WriteLine("Connected");
+                IPEndPoint remoteEP = new IPEndPoint(_ip, _port);
+                _tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                _tcpSocket.Connect(remoteEP);
             }
             catch (Exception e)
             {
@@ -38,26 +57,26 @@ namespace ModbusImp
 
         void IMBContext.Disconnect()
         {
-            tcpSocket.Shutdown(SocketShutdown.Both);
-            tcpSocket.Close();
+            _tcpSocket.Shutdown(SocketShutdown.Both);
+            _tcpSocket.Close();
         }
 
         int IMBContext.SendMsg(byte[] message)
         {
-            int bytesSent = tcpSocket.Send(message);
+            int bytesSent = _tcpSocket.Send(message);
             return bytesSent;
         }
 
         int IMBContext.RecieveMsg(ref byte[] buff)
         { 
-            int bytesRec = tcpSocket.Receive(buff);
+            int bytesRec = _tcpSocket.Receive(buff);
             return bytesRec;
         }
 
         byte[] IMBContext.BuildMessage(byte slaveId, byte functionCode, byte[] data)
         {
-            tcpRequest = new TCPRequest(slaveId, functionCode, data);
-            return tcpRequest.RequestMsg;
+            _tcpRequest = new TCPRequest(slaveId, functionCode, data);
+            return _tcpRequest.RequestMsg;
         }
 
         byte[] IMBContext.GetContent(byte[] fullResponse, int expectedBytes)
@@ -69,7 +88,7 @@ namespace ModbusImp
 
         int IMBContext.GetHeader()
         {
-            return tcpRequest.Header;
+            return _tcpRequest.Header;
         }
     }
 }
