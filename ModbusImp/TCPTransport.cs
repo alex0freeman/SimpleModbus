@@ -13,21 +13,11 @@ namespace ModbusImp
         /// IP address of Modbus device
         /// </summary>
         private IPAddress _ip;
-        public IPAddress Ip
-        {
-            get { return _ip; }
-            set { _ip = value; }
-        }
 
         /// <summary>
         /// Modbus port
         /// </summary>
         private ushort _port;
-        public ushort Port
-        {
-            get { return _port; }
-            set { _port = value; }
-        }
 
         /// <summary>
         /// TCP socket used in connection
@@ -48,7 +38,7 @@ namespace ModbusImp
 
         string IMBContext.ConnectionCredentials()
         {
-            return Ip + ":" + Port;
+            return _ip + ":" + _port;
         }
 
         void IMBContext.Connect()
