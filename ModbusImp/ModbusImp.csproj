@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="AbstractRequest.cs" />
     <Compile Include="AbstractResponse.cs" />
-    <Compile Include="AbstractTransport.cs" />
+    <Compile Include="MBContext.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Modbus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
