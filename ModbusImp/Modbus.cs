@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace ModbusImp
 {
@@ -8,14 +9,31 @@ namespace ModbusImp
     /// <typeparam name="T">Connection type</typeparam>
     public class ModbusDevice<T> where T : IMBContext
     {
-        private T cntx; // Modbus context
-        public byte SlaveId { get; set; }
+        /// <summary>
+        /// Modbus device context
+        /// </summary>
+        private T cntx;
+        /// <summary>
+        /// Unique identificator of slave
+        /// </summary>
+        private byte SlaveId { get; set; }
+        /// <summary>
+        /// TODO: ???
+        /// </summary>
         public int expectedResponseBytes;
         
         public ModbusDevice(T cntx, byte slaveId)
         {
             this.cntx = cntx;
             SlaveId = slaveId;
+        }
+
+        /// <summary>
+        /// Returns information about active connection
+        /// </summary>
+        public string ConnectionCredentials()
+        {
+            return cntx.ConnectionCredentials();
         }
 
         /// <summary>

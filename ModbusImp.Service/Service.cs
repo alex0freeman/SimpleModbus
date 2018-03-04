@@ -15,18 +15,10 @@ namespace ModbusImp.Service
     public class ModbusImpl : ModbusTCP.ModbusTCPBase
     {
         /// <summary>
-        /// Current device context
+        /// Pool that contains available Modbus devices contexts
         /// </summary>
-        private Dictionary<Tuple<string, ushort>, ModbusDevice<IMBContext>> _device_contexts;
+        private ModbusContextMultiton DeviceContextsPool;
 
-        ~ModbusImpl()
-        {
-            foreach (var ctx in this._device_contexts)
-            {
-                ctx.Value.Disconnect();
-            }
-        }
-        
         /// <summary>
         /// Client new Modbus connection initialize
         /// </summary>
@@ -38,15 +30,12 @@ namespace ModbusImp.Service
             var device = new Tuple<string, ushort>(address, port);
             
             // Register device context
-            Transport<TCPContext>.Register(1, () => new TCPContext(address, port));
-            var tcp = Transport<TCPContext>.Create(1);
-            _device_contexts.Add(device, new ModbusDevice<IMBContext>(tcp, 1));
+            DeviceContextsPool = ModbusContextMultiton.GetInstance(device);
             
             // Initialize connection
-            _device_contexts[device].Connect();
+            DeviceContextsPool.ModbusContext.Connect();
             
             // Send connection status
-            // TODO: Add connection check in library
             return Task.FromResult(new ModbusConnectionResponse { Connected = true });
         }
         
@@ -55,25 +44,28 @@ namespace ModbusImp.Service
         /// </summary>
         public override Task<ModbusReadResponse> ReadModbus(ModbusReadRequest request, ServerCallContext context)
         {
+            // Get required device
             var address = Convert.ToString(request.Ip);
             var port = Convert.ToUInt16(request.Port);
             var device = new Tuple<string, ushort>(address, port);
-            var device_context = this._device_contexts[device];
+            DeviceContextsPool = ModbusContextMultiton.GetInstance(device);
+            
             var registerType = request.RegisterType;
             var startAddress = Convert.ToUInt16(request.StartAddress);
             var readCnt = Convert.ToUInt16(request.ReadCnt);
             
             // Request Modbus slave 
             // TODO: Fix type conversions in library
+            // TODO: Think more about logic to call required function
             byte[] seq = null;
             switch (registerType)
             {
                 case ModbusRegisters.Coil:
-                    var resultCoil = device_context.ReadCoils(startAddress, readCnt);
+                    var resultCoil = DeviceContextsPool.ModbusContext.ReadCoils(startAddress, readCnt);
                     seq = Array.ConvertAll(resultCoil, b => b ? (byte) 1 : (byte) 0);
                     break;
                 case ModbusRegisters.DiscreteInput:
-                    var resultInput = device_context.ReadDiscreteInputs(startAddress, readCnt);
+                    var resultInput = DeviceContextsPool.ModbusContext.ReadDiscreteInputs(startAddress, readCnt);
                     seq = Array.ConvertAll(resultInput, b => b ? (byte) 1 : (byte) 0);
                     break;
                 case ModbusRegisters.Holding:
@@ -86,6 +78,7 @@ namespace ModbusImp.Service
                     break;
             }
             
+            Console.WriteLine(ByteString.CopyFrom(seq));
             return Task.FromResult(new ModbusReadResponse
             {
                 Seq = ByteString.CopyFrom(seq)

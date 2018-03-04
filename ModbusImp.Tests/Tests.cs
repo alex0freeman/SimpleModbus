@@ -55,7 +55,7 @@ namespace ModbusImp.Tests
                 Console.Write("{0} ", coil.ToString());
             }
             
-            Assert.AreEqual(coils.Length, registersToRead);
+            Assert.AreEqual(registersToRead, coils.Length);
         }
         
         [Test]
@@ -71,7 +71,7 @@ namespace ModbusImp.Tests
                 Console.Write("{0} ", input.ToString());
             }
             
-            Assert.AreEqual(discreteInputs.Length, registersToRead);
+            Assert.AreEqual(registersToRead, discreteInputs.Length);
         }
         
         [Test]
@@ -87,7 +87,7 @@ namespace ModbusImp.Tests
                 Console.Write("{0} ", input.ToString());
             }
             
-            Assert.AreEqual(inputs.Length, registersToRead);
+            Assert.AreEqual(registersToRead, inputs.Length);
         }
         
         [Test]
@@ -103,7 +103,7 @@ namespace ModbusImp.Tests
                 Console.Write("{0} ", holding.ToString());
             }
             
-            Assert.AreEqual(holdings.Length, registersToRead);
+            Assert.AreEqual(registersToRead, holdings.Length);
         }
         
         [Test]
@@ -115,7 +115,7 @@ namespace ModbusImp.Tests
 
             Console.WriteLine("Write single coil: {0}", result);
             
-            Assert.AreEqual(result, true);
+            Assert.AreEqual(true, result);
         }
         
         [Test]
@@ -127,7 +127,7 @@ namespace ModbusImp.Tests
 
             Console.WriteLine("Write single holding: {0}", result);
             
-            Assert.AreEqual(result, true);
+            Assert.AreEqual(true, result);
         }
         
         [Test]
@@ -135,11 +135,11 @@ namespace ModbusImp.Tests
         public void TestWriteCoils()
         {
             var data = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
-            var result = SlaveDeviceContext.WriteCoils(1, (ushort)(data.Length-1), 2, data);
+            var result = SlaveDeviceContext.WriteCoils(1, (ushort)(data.Length), 2, data);
 
             Console.WriteLine("Write coils: {0} bytes was written", result);
             
-            Assert.AreEqual(result, data.Length);
+            Assert.AreEqual(data.Length, result);
         }
     }
 }

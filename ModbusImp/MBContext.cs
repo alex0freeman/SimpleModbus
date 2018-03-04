@@ -6,6 +6,12 @@
     public interface IMBContext
     {
         /// <summary>
+        /// Get information about connection credentials
+        /// </summary>
+        /// <returns>String representation of credentials</returns>
+        string ConnectionCredentials();
+        
+        /// <summary>
         /// Establish connection with target device
         /// </summary>
         void Connect();
