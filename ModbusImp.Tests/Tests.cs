@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using NUnit.Framework;
 
 namespace ModbusImp.Tests
@@ -21,8 +22,9 @@ namespace ModbusImp.Tests
         /// </summary>
         private const string Hostname = "127.0.0.1";
         private const int Port = 5002;
+        private const int SlaveId = 1;
 
-        private ModbusDevice<IMBContext> SlaveDeviceContext;
+        private ModbusDevice<TCPContext> SlaveDeviceContext;
 
         /// <summary>
         /// Initialize connection context
@@ -30,10 +32,7 @@ namespace ModbusImp.Tests
         [OneTimeSetUp]
         public void Init()
         {
-            Transport<TCPContex>.Register(1, () => new TCPContex(Hostname, Port));
-            var tcp = Transport<TCPContex>.Create(1);
-            SlaveDeviceContext = new ModbusDevice<IMBContext>(tcp, 1);
-            
+            SlaveDeviceContext = new ModbusDevice<TCPContext>(new TCPContext(Hostname, Port), SlaveId);
             SlaveDeviceContext.Connect();
         }
 
@@ -112,7 +111,7 @@ namespace ModbusImp.Tests
         public void TestWriteSingleCoil()
         {
             const ushort value = 19;
-            var result = SlaveDeviceContext.WriteSingleCoil(1, value);
+            var result = SlaveDeviceContext.WriteSingleCoil(0, value);
 
             Console.WriteLine("Write single coil: {0}", result);
             
@@ -124,7 +123,7 @@ namespace ModbusImp.Tests
         public void TestWriteSingleHolding()
         {
             const ushort value = 19;
-            var result = SlaveDeviceContext.WriteSingleHolding(1, value);
+            var result = SlaveDeviceContext.WriteSingleHolding(0, value);
 
             Console.WriteLine("Write single holding: {0}", result);
             
@@ -135,7 +134,7 @@ namespace ModbusImp.Tests
         [Category("Write")]
         public void TestWriteCoils()
         {
-            var data = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+            var data = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
             var result = SlaveDeviceContext.WriteCoils(1, (ushort)(data.Length-1), 2, data);
 
             Console.WriteLine("Write coils: {0} bytes was written", result);

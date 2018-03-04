@@ -2,29 +2,46 @@
 
 namespace ModbusImp
 {
+    /// <summary>
+    /// Represents context for single Modbus device
+    /// </summary>
+    /// <typeparam name="T">Connection type</typeparam>
     public class ModbusDevice<T> where T : IMBContext
     {
         private T cntx; // Modbus context
         public byte SlaveId { get; set; }
         public int expectedResponseBytes;
+        
         public ModbusDevice(T cntx, byte slaveId)
         {
             this.cntx = cntx;
             SlaveId = slaveId;
         }
 
-        // Read data from current context
+        /// <summary>
+        /// Read data from current context
+        /// </summary>
+        /// <param name="funcNumber">Code of Modbus function</param>
+        /// <param name="data">Data </param>
+        /// <returns></returns>
         private byte[] Read(byte funcNumber, byte[] data)
         {
             byte[] message = cntx.BuildMessage(SlaveId, funcNumber, data);
             expectedResponseBytes += cntx.GetHeader();
             byte[] response = new byte[expectedResponseBytes];
             cntx.SendMsg(message);
-            int cnt = cntx.RecieveMsg(ref response);
+            var cnt = cntx.RecieveMsg(ref response);
+            // FIXME: Assert with count of readed bytes?
             return cntx.GetContent(response, expectedResponseBytes);
         }
 
-        bool WriteSingle(byte functionCode, byte[] data)
+        /// <summary>
+        /// Write single reigster for current device
+        /// </summary>
+        /// <param name="functionCode">Modbus function code</param>
+        /// <param name="data">Data to write</param>
+        /// <returns>Operation status</returns>
+        bool WriteRegister(byte functionCode, byte[] data)
         {
             byte[] message = cntx.BuildMessage(SlaveId, functionCode, data);
             expectedResponseBytes = message.Length;
@@ -34,7 +51,13 @@ namespace ModbusImp
             return Enumerable.SequenceEqual(response, message);
         }
         
-        int WriteMultiply(byte functionCode, byte[] data)
+        /// <summary>
+        /// Write multiple registers for current device
+        /// </summary>
+        /// <param name="functionCode">Modbus function code</param>
+        /// <param name="data">Data to write</param>
+        /// <returns>Number of writed bytes</returns>
+        int WriteRegisters(byte functionCode, byte[] data)
         {
             byte[] content = Read(functionCode, data);
             return content.Last();
@@ -75,30 +98,30 @@ namespace ModbusImp
         public bool WriteSingleCoil(ushort address, ushort value)
         {
             var writeCoilData = new MBWriteSingleCoil(address, value);
-            var writeResult = WriteSingle((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
+            var writeResult = WriteRegister((byte)MbFunctions.WriteSingleCoil, TypeManager<MBWriteSingleCoil>.ToBytes(writeCoilData));
             return writeResult;
         }
 
         public bool WriteSingleHolding(ushort address, ushort value)
         {
             var writeHoldingData = new MBWriteSingleHolding(address, value);
-            var writeResult = WriteSingle((byte)MbFunctions.WriteSingleHolding, TypeManager<MBWriteSingleHolding>.ToBytes(writeHoldingData));
+            var writeResult = WriteRegister((byte)MbFunctions.WriteSingleHolding, TypeManager<MBWriteSingleHolding>.ToBytes(writeHoldingData));
             return writeResult;
         }
 
         public int WriteCoils(ushort address, ushort countItems, byte nextByteCount, byte[] data)
         {
-            var writeCoilsData = new MBWriteMultiplyCoils(address, countItems, nextByteCount, data);
-            expectedResponseBytes = TypeManager<MBWriteMultiplyCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteCoils, countItems);
-            var writeCountBytes = WriteMultiply((byte)MbFunctions.WriteCoils, TypeManager<MBWriteMultiplyCoils>.ToBytes(writeCoilsData));
+            var writeCoilsData = new MBWriteCoils(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteCoils, countItems);
+            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteCoils, TypeManager<MBWriteCoils>.ToBytes(writeCoilsData));
             return writeCountBytes;
         }
 
         public int WriteHoldings(ushort address, ushort countItems, byte nextByteCount, byte[] data)
         {
-            var writeHoldingsData = new MBWriteMultiplyHoldingRegisters(address, countItems, nextByteCount, data);
-            expectedResponseBytes = TypeManager<MBWriteMultiplyHoldingRegisters>.GetExpectedBytesByFunction((int)MbFunctions.WriteHoldings, countItems);
-            var writeCountBytes = WriteMultiply((byte)MbFunctions.WriteHoldings, TypeManager<MBWriteMultiplyHoldingRegisters>.ToBytes(writeHoldingsData));
+            var writeHoldingsData = new MBWriteHoldings(address, countItems, nextByteCount, data);
+            expectedResponseBytes = TypeManager<MBWriteHoldings>.GetExpectedBytesByFunction((int)MbFunctions.WriteHoldings, countItems);
+            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteHoldings, TypeManager<MBWriteHoldings>.ToBytes(writeHoldingsData));
             return writeCountBytes;
         }
 

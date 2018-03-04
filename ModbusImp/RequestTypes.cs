@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 
-
-//TODO Reverse Bytes in TypeManager
+// TODO: Reverse Bytes in TypeManager
 namespace ModbusImp
 {
+    /// <summary>
+    /// Read Coil Registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBReadCoils
     {
@@ -18,6 +20,9 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Read Discrete Input Registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBReadDiscretes
     {
@@ -31,6 +36,9 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Read Input Registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBReadInputRegisters
     {
@@ -44,6 +52,9 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Read Holding Registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBReadHoldingRegisters
     {
@@ -57,6 +68,9 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Write single Coil Register
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBWriteSingleCoil
     {
@@ -70,6 +84,9 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Write single Holding Register
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MBWriteSingleHolding
     {
@@ -83,15 +100,22 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Write multiple Coil Registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MBWriteMultiplyCoils
+    struct MBWriteCoils
     {
         public ushort startAddress;
         public ushort countItems;
         public byte nextByteCount;
         public byte[] data;
 
-        public MBWriteMultiplyCoils(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        /// <param name="startAddress">First register address to write</param>
+        /// <param name="countItems">Quantity of registers to write</param>
+        /// <param name="nextByteCount"></param>
+        /// <param name="data">Data to write</param>
+        public MBWriteCoils(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
         {
             this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0); 
             this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);
@@ -100,15 +124,18 @@ namespace ModbusImp
         }
     }
 
+    /// <summary>
+    /// Write multiple Holding registers
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MBWriteMultiplyHoldingRegisters
+    struct MBWriteHoldings
     {
         public ushort startAddress { get; set; }
         public ushort countItems { get; set; }
         public byte nextByteCount;
         public byte[] data;
 
-        public MBWriteMultiplyHoldingRegisters(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        public MBWriteHoldings(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
         {
             this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
             this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);

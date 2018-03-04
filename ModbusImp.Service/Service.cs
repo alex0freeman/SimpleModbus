@@ -38,8 +38,8 @@ namespace ModbusImp.Service
             var device = new Tuple<string, ushort>(address, port);
             
             // Register device context
-            Transport<TCPContex>.Register(1, () => new TCPContex(address, port));
-            var tcp = Transport<TCPContex>.Create(1);
+            Transport<TCPContext>.Register(1, () => new TCPContext(address, port));
+            var tcp = Transport<TCPContext>.Create(1);
             _device_contexts.Add(device, new ModbusDevice<IMBContext>(tcp, 1));
             
             // Initialize connection

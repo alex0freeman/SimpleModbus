@@ -4,7 +4,10 @@ using System.Net.Sockets;
 
 namespace ModbusImp
 {
-    public class TCPContex : IMBContext
+    /// <summary>
+    /// Modbus TCP device context
+    /// </summary>
+    public class TCPContext : IMBContext
     {
         IPAddress Ip;
         ushort Port;
@@ -12,7 +15,7 @@ namespace ModbusImp
         TCPRequest tcpRequest;
         TCPResponse _tcpResponse;
 
-        public TCPContex(string ip, ushort port)
+        public TCPContext(string ip, ushort port)
         {
             if (!IPAddress.TryParse(ip, out Ip))
             {
