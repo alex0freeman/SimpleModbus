@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace ModbusImp
 {
@@ -77,10 +78,20 @@ namespace ModbusImp
         /// <returns>Number of writed bytes</returns>
         int WriteRegisters(byte functionCode, byte[] data)
         {
-            byte[] content = Read(functionCode, data);
-            return content.Last();
+            byte[] message = cntx.BuildMessage(SlaveId, functionCode, data);
+            expectedResponseBytes += cntx.GetHeader();
+            byte[] response = new byte[expectedResponseBytes];
+            cntx.SendMsg(message);
+            var cnt = cntx.RecieveMsg(ref response);
+            return response.Last();
         }
 
+        /// <summary>
+        /// Read coils from remote device
+        /// </summary>
+        /// <param name="startAddress"></param>
+        /// <param name="itemCount"></param>
+        /// <returns>Array of coil values(True/False)</returns>
         public bool[] ReadCoils(ushort startAddress, ushort itemCount)
         {
             MBReadCoils coilsData = new MBReadCoils(startAddress, itemCount);
@@ -89,6 +100,13 @@ namespace ModbusImp
             return TypeManager<MBReadCoils>.ParseDiscretes(coils, itemCount);
         }
 
+
+        /// <summary>
+        /// Read discrete inputs from remote device
+        /// </summary>
+        /// <param name="startAddress"></param>
+        /// <param name="itemCount"></param>
+        /// <returns>Array of discrete input values(True/False)</returns>
         public bool[] ReadDiscreteInputs(ushort startAddress, ushort itemCount)
         {
             MBReadDiscretes discretesData = new MBReadDiscretes(startAddress, itemCount);
@@ -97,6 +115,12 @@ namespace ModbusImp
             return TypeManager<MBReadDiscretes>.ParseDiscretes(discreteInputs, itemCount);
         }
 
+        /// <summary>
+        /// Read input registers from remote device
+        /// </summary>
+        /// <param name="startAddress"></param>
+        /// <param name="itemCount"></param>
+        /// <returns>Array of input register values</returns>
         public short[] ReadInputs(ushort startAddress, ushort itemCount)
         {
             MBReadInputRegisters intputRegisterData = new MBReadInputRegisters(startAddress, itemCount);
@@ -105,6 +129,13 @@ namespace ModbusImp
             return TypeManager<MBReadInputRegisters>.ParseRegisters(inputRegisters, itemCount);
         }
 
+
+        /// <summary>
+        /// Read holding registers from remote device
+        /// </summary>
+        /// <param name="startAddress"></param>
+        /// <param name="itemCount"></param>
+        /// <returns>Array of holding register values</returns>
         public short[] ReadHoldings(ushort startAddress, ushort itemCount)
         {
             MBReadHoldingRegisters hodingRegistersData = new MBReadHoldingRegisters(startAddress, itemCount);
@@ -113,6 +144,12 @@ namespace ModbusImp
             return TypeManager<MBReadHoldingRegisters>.ParseRegisters(holdingRegisters, itemCount);
         }
 
+        /// <summary>
+        /// Force/write single coil to remote device
+        /// </summary>
+        /// <param name="address">Address of coil</param>
+        /// <param name="value">Value to force/write (on: 0xFF00, off: 0) </param>
+        /// <returns>Recording result (true/ false)</returns>
         public bool WriteSingleCoil(ushort address, ushort value)
         {
             var writeCoilData = new MBWriteSingleCoil(address, value);
@@ -120,6 +157,13 @@ namespace ModbusImp
             return writeResult;
         }
 
+
+        /// <summary>
+        /// Preset/write single holding register to remote device
+        /// </summary>
+        /// <param name="address">Address of holding register to preset/write</param>
+        /// <param name="value"></param>
+        /// <returns>Recording result (true/ false)</returns>
         public bool WriteSingleHolding(ushort address, ushort value)
         {
             var writeHoldingData = new MBWriteSingleHolding(address, value);
@@ -127,19 +171,38 @@ namespace ModbusImp
             return writeResult;
         }
 
+
+        /// <summary>
+        /// Force/write multiple coils to remote device
+        /// </summary>
+        /// <param name="address">Address of first coil to force/write</param>
+        /// <param name="countItems">Number of coils to force/write</param>
+        /// <param name="nextByteCount">Number of bytes of coil values to follow</param>
+        /// <param name="data">Coil values (8 coil values per byte)</param>
+        /// <returns>Number of recorded coils</returns>
         public int WriteCoils(ushort address, ushort countItems, byte nextByteCount, byte[] data)
         {
-            var writeCoilsData = new MBWriteCoils(address, countItems, nextByteCount, data);
+            var writeCoilsData = new MBWriteCoils(address, countItems, nextByteCount);
+            var allNumbers = TypeManager<MBWriteCoils>.ToBytes(writeCoilsData).Concat(data).ToArray();
             expectedResponseBytes = TypeManager<MBWriteCoils>.GetExpectedBytesByFunction((int)MbFunctions.WriteCoils, countItems);
-            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteCoils, TypeManager<MBWriteCoils>.ToBytes(writeCoilsData));
+            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteCoils, allNumbers);
             return writeCountBytes;
         }
 
-        public int WriteHoldings(ushort address, ushort countItems, byte nextByteCount, byte[] data)
+        /// <summary>
+        /// Preset/write multiple holding registers
+        /// </summary>
+        /// <param name="address">Address of first holding register to preset/write</param>
+        /// <param name="countItems">Number of holding registers to preset/write</param>
+        /// <param name="nextByteCount">Number of bytes of register values to follow</param>
+        /// <param name="data">New values of holding registers (16 bits per register)</param>
+        /// <returns>Number of preset/written holding registers</returns>
+        public int WriteHoldings(ushort address, ushort countItems, byte nextByteCount, short[] data)
         {
-            var writeHoldingsData = new MBWriteHoldings(address, countItems, nextByteCount, data);
+            var writeHoldingsData = new MBWriteHoldings(address, countItems, nextByteCount);
+            var allNumbers = TypeManager<MBWriteHoldings>.ToBytes(writeHoldingsData).Concat(TypeManager<MBWriteHoldings>.ToBytes(data)).ToArray();
             expectedResponseBytes = TypeManager<MBWriteHoldings>.GetExpectedBytesByFunction((int)MbFunctions.WriteHoldings, countItems);
-            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteHoldings, TypeManager<MBWriteHoldings>.ToBytes(writeHoldingsData));
+            var writeCountBytes = WriteRegisters((byte)MbFunctions.WriteHoldings, allNumbers);
             return writeCountBytes;
         }
 

@@ -109,18 +109,15 @@ namespace ModbusImp
         public ushort startAddress;
         public ushort countItems;
         public byte nextByteCount;
-        public byte[] data;
 
         /// <param name="startAddress">First register address to write</param>
         /// <param name="countItems">Quantity of registers to write</param>
         /// <param name="nextByteCount"></param>
-        /// <param name="data">Data to write</param>
-        public MBWriteCoils(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        public MBWriteCoils(ushort startAddress, ushort countItems, byte nextByteCount)
         {
             this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0); 
             this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);
             this.nextByteCount = nextByteCount;
-            this.data = data;
         }
     }
 
@@ -133,14 +130,12 @@ namespace ModbusImp
         public ushort startAddress { get; set; }
         public ushort countItems { get; set; }
         public byte nextByteCount;
-        public byte[] data;
 
-        public MBWriteHoldings(ushort startAddress, ushort countItems, byte nextByteCount, byte[] data)
+        public MBWriteHoldings(ushort startAddress, ushort countItems, byte nextByteCount)
         {
             this.startAddress = BitConverter.ToUInt16(BitConverter.GetBytes(startAddress).Reverse().ToArray(), 0);
             this.countItems = BitConverter.ToUInt16(BitConverter.GetBytes(countItems).Reverse().ToArray(), 0);
             this.nextByteCount = nextByteCount;
-            this.data = data;
         }
     }
 }

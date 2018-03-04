@@ -81,6 +81,7 @@ namespace ModbusImp
 
         byte[] IMBContext.GetContent(byte[] fullResponse, int expectedBytes)
         {
+            Console.WriteLine(expectedBytes);
             _tcpResponse = new TCPResponse(fullResponse, expectedBytes);
             
             return _tcpResponse.data;

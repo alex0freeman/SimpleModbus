@@ -17,6 +17,14 @@ namespace ModbusImp
             return array;
         }
 
+
+        public static byte[] ToBytes(short[] array)
+        {
+            byte[] result = new byte[array.Length * sizeof(short)];
+            Buffer.BlockCopy(array.Select(x => ReverseBytes(x)).ToArray(), 0, result , 0, result.Length);
+            return result;
+        }
+
         public static int GetExpectedBytesByFunction(int function, int elementsCnt)
         {
             switch (function)
@@ -29,7 +37,7 @@ namespace ModbusImp
                     return 1 + elementsCnt * sizeof(short);
                 case (byte)MbFunctions.WriteCoils:
                 case (byte)MbFunctions.WriteHoldings:
-                    return 3;
+                    return 4;
                 default:
                     return 0;
             }
@@ -50,10 +58,11 @@ namespace ModbusImp
         public static short[] ParseRegisters(byte[] responseData, int count)
         {
             short[] registersArray = new short[count];
-
             Buffer.BlockCopy(responseData, 0, registersArray, 0, responseData.Length);
             return registersArray.Select(x => ReverseBytes(x)).ToArray();
         }
+
+
 
         public static short ReverseBytes(short value)
         {

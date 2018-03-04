@@ -11,13 +11,15 @@ namespace ModbusImp
         byte nextBytesCnt { get; set; }
         public byte[] readCnt { get; set; }
 
-        public MBReadResponse(byte[] request)
+        public MBReadResponse(byte[] response)
         {
-            slaveId = request[0];
-            functionId = request[1];
-            nextBytesCnt = request[2];
+            Console.WriteLine(BitConverter.ToString(response));
+            slaveId = response[0];
+            functionId = response[1];
+            nextBytesCnt = response[2];
             readCnt = new byte[nextBytesCnt];
-            Array.Copy(request, 3, readCnt, 0, request.Length - 3);
+            Array.Copy(response, 3, readCnt, 0, response.Length - 3);
         }
     }
+
 }

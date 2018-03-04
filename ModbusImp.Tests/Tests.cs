@@ -21,7 +21,7 @@ namespace ModbusImp.Tests
         /// Slave credentials
         /// </summary>
         private const string Hostname = "127.0.0.1";
-        private const int Port = 5002;
+        private const int Port = 502;
         private const int SlaveId = 1;
 
         private ModbusDevice<TCPContext> SlaveDeviceContext;
@@ -110,8 +110,8 @@ namespace ModbusImp.Tests
         [Category("Write")]
         public void TestWriteSingleCoil()
         {
-            const ushort value = 19;
-            var result = SlaveDeviceContext.WriteSingleCoil(0, value);
+            const ushort value = 0xFF00;
+            var result = SlaveDeviceContext.WriteSingleCoil(2, value);
 
             Console.WriteLine("Write single coil: {0}", result);
             
@@ -129,7 +129,20 @@ namespace ModbusImp.Tests
             
             Assert.AreEqual(true, result);
         }
-        
+
+
+        [Test]
+        [Category("Write")]
+        public void TestWriteHoldings()
+        {
+            var data = new short[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+            var result = SlaveDeviceContext.WriteHoldings(0, (ushort)(data.Length), (byte)(data.Length * sizeof(short)), data);
+
+            Console.WriteLine("Write coils: {0} bytes was written", result);
+
+            Assert.AreEqual(data.Length, result);
+        }
+
         [Test]
         [Category("Write")]
         public void TestWriteCoils()
