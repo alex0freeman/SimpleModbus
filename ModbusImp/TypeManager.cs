@@ -43,14 +43,14 @@ namespace ModbusImp
             }
         }
 
-        public static bool[] ParseDiscretes(byte[] responseData, int count)
+        public static byte[] ParseDiscretes(byte[] responseData, int count)
         {
-            bool[] discreteArray = new bool[count];
+            byte[] discreteArray = new byte[count];
             for (int i = 0; i < count; i++)
             {
                 int cur = (i >= 8) ? 0 : i;
                 byte bitMask = (byte)(1 << cur);
-                discreteArray[i] = Convert.ToBoolean(responseData[(i / 8)] & bitMask);
+                discreteArray[i] = (byte)(responseData[(i / 8)] & bitMask);
             }
             return discreteArray;
         }

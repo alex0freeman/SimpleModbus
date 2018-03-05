@@ -92,7 +92,7 @@ namespace ModbusImp
         /// <param name="startAddress"></param>
         /// <param name="itemCount"></param>
         /// <returns>Array of coil values(True/False)</returns>
-        public bool[] ReadCoils(ushort startAddress, ushort itemCount)
+        public byte[] ReadCoils(ushort startAddress, ushort itemCount)
         {
             MBReadCoils coilsData = new MBReadCoils(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadCoils>.GetExpectedBytesByFunction((int)MbFunctions.ReadCoils, itemCount);
@@ -107,7 +107,7 @@ namespace ModbusImp
         /// <param name="startAddress"></param>
         /// <param name="itemCount"></param>
         /// <returns>Array of discrete input values(True/False)</returns>
-        public bool[] ReadDiscreteInputs(ushort startAddress, ushort itemCount)
+        public byte[] ReadDiscreteInputs(ushort startAddress, ushort itemCount)
         {
             MBReadDiscretes discretesData = new MBReadDiscretes(startAddress, itemCount);
             expectedResponseBytes = TypeManager<MBReadDiscretes>.GetExpectedBytesByFunction((int)MbFunctions.ReadDiscreteInputs, itemCount);
