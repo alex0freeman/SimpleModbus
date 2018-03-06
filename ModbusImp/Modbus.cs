@@ -38,19 +38,31 @@ namespace ModbusImp
         }
 
         /// <summary>
-        /// Read data from current context
+        /// Server data exchange function
         /// </summary>
-        /// <param name="funcNumber">Code of Modbus function</param>
-        /// <param name="data">Data </param>
+        /// <param name="funcNumber"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        private byte[] Read(byte funcNumber, byte[] data)
+        private byte[] Excange(byte funcNumber, byte[] data)
         {
             byte[] message = cntx.BuildMessage(SlaveId, funcNumber, data);
             expectedResponseBytes += cntx.GetHeader();
             byte[] response = new byte[expectedResponseBytes];
             cntx.SendMsg(message);
             var cnt = cntx.RecieveMsg(ref response);
-            // FIXME: Assert with count of readed bytes?
+            return response;
+        }
+
+        /// <summary>
+        /// Read data from current context
+        /// </summary>
+        /// <param name="funcNumber">Code of Modbus function</param>
+        /// <param name="data">Data </param>
+        /// <returns></returns>
+        /// 
+        private byte[] Read(byte funcNumber, byte[] data)
+        {
+            byte[] response = Excange(funcNumber, data);
             return cntx.GetContent(response, expectedResponseBytes);
         }
 
@@ -78,11 +90,7 @@ namespace ModbusImp
         /// <returns>Number of writed bytes</returns>
         int WriteRegisters(byte functionCode, byte[] data)
         {
-            byte[] message = cntx.BuildMessage(SlaveId, functionCode, data);
-            expectedResponseBytes += cntx.GetHeader();
-            byte[] response = new byte[expectedResponseBytes];
-            cntx.SendMsg(message);
-            var cnt = cntx.RecieveMsg(ref response);
+            byte[] response = Excange(functionCode, data);
             return response.Last();
         }
 
