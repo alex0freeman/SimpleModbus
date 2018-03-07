@@ -43,7 +43,7 @@ namespace ModbusImp
         /// <param name="funcNumber"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private byte[] Excange(byte funcNumber, byte[] data)
+        private byte[] Exchange(byte funcNumber, byte[] data)
         {
             byte[] message = cntx.BuildMessage(SlaveId, funcNumber, data);
             expectedResponseBytes += cntx.GetHeader();
@@ -62,7 +62,7 @@ namespace ModbusImp
         /// 
         private byte[] Read(byte funcNumber, byte[] data)
         {
-            byte[] response = Excange(funcNumber, data);
+            byte[] response = Exchange(funcNumber, data);
             return cntx.GetContent(response, expectedResponseBytes);
         }
 
@@ -90,7 +90,7 @@ namespace ModbusImp
         /// <returns>Number of writed bytes</returns>
         int WriteRegisters(byte functionCode, byte[] data)
         {
-            byte[] response = Excange(functionCode, data);
+            byte[] response = Exchange(functionCode, data);
             return response.Last();
         }
 
