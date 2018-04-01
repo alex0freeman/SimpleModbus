@@ -1,10 +1,9 @@
 # Simple Modbus
 
-[![Travis Build Status](https://travis-ci.org/jubnzv/SimpleModus.svg?branch=master)](https://travis-ci.org/jubnzv/SimpleModbus)
-
-Service using in local network to manage devices available on Modbus TCP protocol.
+Service that exploses Modbus TCP protocol to gRPC.
 
 ## Description
+
 Service represented with two components:
 + ModbusImp
   Library that implements Modbus access to target devices
@@ -12,7 +11,6 @@ Service represented with two components:
   gRPC service used as middleware between web client and target device
 
 ## Usage
-*Note:* Project currently under development, some functions may works incorrectly.
 
 1. Run gRPC service in docker:
 ```
@@ -30,10 +28,3 @@ That can be done with with simple python client runned on localhost:
 ```
 
 You also can use project tests based on NUnit framework. There is additional overhead with ModbusImp.Test (described in comments to `Test.cs`): standalone Modbus TCP slave is required.
-
-## TODO
-+ ModbusRTU wrapper
-+ Describe ModbusImp API
-+ Modbus TCP Slave implementation (+ fix tests for Modbus TCP client)
-+ Replace Transport with standalone thread-safe ModbusContext devices pool on ModbusImp.Service
-+ gRPC client implementation (+ tests for gRPC server)
